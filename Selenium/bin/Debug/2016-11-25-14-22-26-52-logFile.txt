@@ -1,0 +1,11 @@
+2016-11-25-14:22:26 - Start the Firefox driver
+2016-11-25-14:22:26 - Start the Firefox driver
+2016-11-25-14:22:26 - Start the firefox driver
+2016-11-25-14:22:26 - Start the Chrome driver
+2016-11-25-14:22:28 - Start the Safari driver
+2016-11-25-14:22:48 - Set implicitly wait timeout 30
+2016-11-25-14:22:48 - Go to http://10.0.30.2:8082/
+2016-11-25-14:22:48 - Quit the driver
+2016-11-25-14:23:00 - Set implicitly wait timeout 30
+2016-11-25-14:23:00 - Go to http://10.0.30.2:8082/
+2016-11-25-14:23:00 - Quit the driver

@@ -1,0 +1,19 @@
+2016-12-09-13:35:15 - Start the Firefox driver
+2016-12-09-13:35:15 - Start the firefox driver
+2016-12-09-13:35:15 - Start the Firefox driver
+2016-12-09-13:35:15 - Start the Safari driver
+2016-12-09-13:35:31 - Set implicitly wait timeout 30
+2016-12-09-13:35:31 - Go to https://www.zennioptical.com
+2016-12-09-13:35:31 - Find element By.XPath: //ul[@id='main-nav']/li[5]
+2016-12-09-13:35:56 - Click at the element
+2016-12-09-13:35:57 - Find element By.XPath: (//a[contains(text(),'Login / Sign Up')])[2]
+2016-12-09-13:35:57 - Click at the element
+2016-12-09-13:35:57 - Find element By.Id: signIn_email
+2016-12-09-13:36:17 - Click at the element
+2016-12-09-13:36:18 - Find element By.Id: siginIn_pw
+2016-12-09-13:36:18 - Click at the element
+2016-12-09-13:36:18 - Find element By.Id: login
+2016-12-09-13:36:18 - Click at the element
+2016-12-09-13:36:27 - Find element By.XPath: //ul[@id='main-nav']/li[5]
+2016-12-09-13:36:34 - Click at the element
+2016-12-09-13:36:34 - Quit the driver

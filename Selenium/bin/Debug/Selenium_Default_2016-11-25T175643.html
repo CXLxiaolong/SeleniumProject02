@@ -1,0 +1,3835 @@
+<!DOCTYPE html>
+<html>
+	<head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<title>Selenium Test Execution Report</title>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.6.2.min.js"></script>
+        <script type="text/javascript">
+            /**
+            * jQuery.fn.sortElements
+            * --------------
+            * #author James Padolsey (http://james.padolsey.com)
+            * #version 0.11
+            * #updated 18-MAR-2010
+            * #url https://raw.github.com/jamespadolsey/jQuery-Plugins/master/sortElements/jquery.sortElements.js
+            * --------------
+            * #param Function comparator:
+            *   Exactly the same behaviour as [1,2,3].sort(comparator)
+            *   
+            * #param Function getSortable
+            *   A function that should return the element that is
+            *   to be sorted. The comparator will run on the
+            *   current collection, but you may want the actual
+            *   resulting sort to occur on a parent or another
+            *   associated element.
+            *   
+            *   E.g. $('td').sortElements(comparator, function(){
+            *      return this.parentNode; 
+            *   })
+            *   
+            *   The <td>'s parent (<tr>) will be sorted instead
+            *   of the <td> itself.
+            */
+            jQuery.fn.sortElements = (function () {
+
+                var sort = [].sort;
+
+                return function (comparator, getSortable) {
+
+                    getSortable = getSortable || function () { return this; };
+
+                    var placements = this.map(function () {
+
+                        var sortElement = getSortable.call(this),
+                parentNode = sortElement.parentNode,
+
+                        // Since the element itself will change position, we have
+                        // to have some way of storing it's original position in
+                        // the DOM. The easiest way is to have a 'flag' node:
+                nextSibling = parentNode.insertBefore(
+                    document.createTextNode(''),
+                    sortElement.nextSibling
+                );
+
+                        return function () {
+
+                            if (parentNode === this) {
+                                throw new Error(
+                        "You can't sort elements if any one is a descendant of another."
+                    );
+                            }
+
+                            // Insert before flag:
+                            parentNode.insertBefore(this, nextSibling);
+                            // Remove flag:
+                            parentNode.removeChild(nextSibling);
+
+                        };
+
+                    });
+
+                    return sort.call(this, comparator).each(function (i) {
+                        placements[i].call(getSortable.call(this));
+                    });
+
+                };
+
+            })();
+        </script>
+        <script type="text/javascript">
+            jQuery.fn.setBarSizes = (function () {
+                return function (metricName, maxBarSize, min) {
+                    var max = Math.max.apply(Math, $.makeArray($(this).map(function () { return Number($(this).attr('data-sr-' + metricName)); })));
+                    var scale = 1.0;
+                    while (max > 0.0 && max <= 10.0) {
+                        scale = scale * 10.0;
+                        max = max * 10.0;
+                    }
+                    max = (Math.ceil(max / 2) * 2) / scale;
+
+                    this.each(function () {
+                        var barAnchor = $(this).find('a');
+                        var actual = $(this).attr('data-sr-' + metricName);
+                        var newHeight = Math.max(Math.round(maxBarSize * (actual - min) / (max - min)), 2);
+                        barAnchor.css({ height: newHeight });
+                    });
+
+                    var unit = "";
+                    if (metricName.substr(metricName.length - 4, 4) === "time")
+                        unit = "s";
+
+                    $('#testview .scale-min-label').each(function () {
+                        $(this).text(min.toString() + unit);
+                    });
+                    $('#testview .scale-max-label').each(function () {
+                        $(this).text(max.toString() + unit);
+                    });
+                    var mid = max / 2;
+                    $('#testview .scale-mid-label').each(function () {
+                        $(this).text(mid.toString() + unit);
+                    });
+                };
+            })();
+
+            function getComparer(metricName, isDesc) {
+                return function (a, b) {
+                    var aNumber = Number($(a).attr('data-sr-' + metricName));
+                    var bNumber = Number($(b).attr('data-sr-' + metricName));
+                    var result = aNumber > bNumber ? 1 : (aNumber < bNumber ? -1 : 0);
+                    if (isDesc)
+                        result = -1 * result;
+
+                    if (result == 0 && metricName != "order")
+                        result = getComparer("order", false)(a, b);
+
+                    return result;
+                };
+            }
+
+            var currentSort = "";
+            function doSort(allowToggleDesc) {
+                var newSort = $("input[name='barSortOrder']:checked").val();
+                if (allowToggleDesc && currentSort == newSort) {
+                    $('#barSortDesc').click();
+                    doSort(false);
+                    return;
+                }
+                currentSort = newSort;
+                $('#testview td.testview-item').sortElements(getComparer(newSort, $('#barSortDesc').is(':checked')));
+            }
+
+
+            function doSetHeights(allowSort) {
+                var selectedMetric = $("input[name='barHeight']:checked").val();
+                $('#testview td.testview-item').setBarSizes(selectedMetric, 60, 0.0);
+
+                if (allowSort && currentSort != selectedMetric) {
+                    var $radios = $("input[name='barSortOrder']");
+                    $radios.filter('[value=' + selectedMetric + ']').attr('checked', true);
+                    $("#barSortDesc").attr("checked", [true]);
+                    doSort(false);
+                }
+            }
+
+            $(document).ready(function () {
+                $("input[name='barSortOrder']").click(function () { doSort(true); return true; });
+                $("input[name='barSortDesc']").change(function () { doSort(false); });
+                $("input[name='barHeight']").change(function () { doSetHeights(true); });
+
+                doSort(false);
+                doSetHeights(false);
+
+                $("div.scrollable").css({ 'overflow': 'auto' });
+            });
+        </script>
+
+        <style type="text/css">
+            body 
+            {
+                color: #000000;
+                font-family: Arial,Liberation Sans,DejaVu Sans,sans-serif;
+                line-height: 130%;
+            }
+            h1 {
+                font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif;
+                font-size: 170%;
+                font-weight: bold;
+            }            
+            h2 {
+                font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif;
+                font-size: 130%;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }            
+            h3 {
+                font-family: Trebuchet MS,Liberation Sans,DejaVu Sans,sans-serif;
+                font-size: 120%;
+                font-weight: bold;
+                margin-bottom: 5px;
+            }            
+            a.bar
+            {
+                text-decoration: none;
+                display: block;
+                line-height: 1px;
+            }
+            .description
+            {
+                font-style: italic;
+            }
+            .log 
+            {
+                width: 600px;
+                white-space: pre-wrap;
+                display: block;
+                margin: 0px;
+            }
+            .errorMessage 
+            {
+                width: 600px;
+                color: Red;
+                font-weight: bold;
+            }
+            .stackTrace 
+            {
+                width: 600px;
+                white-space: pre-wrap;
+                font-style: italic;
+                color: Red;
+                display: block;
+            }
+            table.testEvents
+            {
+                border: solid 1px #e8eef4;
+                border-collapse: collapse;
+            }
+            table.testEvents td
+            {
+                vertical-align: top;
+                padding: 5px;
+                border: solid 1px #e8eef4;
+            }
+            table.testEvents th
+            {
+                padding: 6px 5px;
+                text-align: left;
+                background-color: #e8eef4;
+                border: solid 1px #e8eef4;                
+            }
+            .comment
+            {
+                font-style: italic;
+                font-size: smaller;
+            }
+            .startupBar
+            {
+                background-color: #EEEEEE;
+                cursor: default;
+            }
+            
+            .colorSucceeded
+            {
+                background-color: #90ED7B;
+            }
+            .colorIgnored
+            {
+                background-color: #FFFF85;
+            }
+            .colorPending
+            {
+                background-color: #D47BED;
+            }
+            .colorNothingToRun
+            {
+                background-color: #CCCCFF;
+            }
+            .colorSkipped
+            {
+                background-color: #CCCCFF;
+            }
+            .colorInconclusive
+            {
+                background-color: #7BEDED;
+            }
+            .colorCleanupFailed
+            {
+                background-color: #FFCCCC;
+            }
+            .colorRandomlyFailed
+            {
+                background-color: #EDB07B;
+            }
+            .colorFailed
+            {
+                background-color: #ED5F5F;
+            }
+            .colorInitializationFailed
+            {
+                background-color: #FF0000;
+            }
+            .colorFrameworkError
+            {
+                background-color: #FF0000;
+            }
+            ul.subNodeLinks
+            {
+                padding-left: 20px;
+                margin: 0px;
+            }
+            ul.subNodeLinks li
+            {
+                list-style: none;
+            }
+            
+            /* views general */
+            div.scrollable
+            {
+                /*overflow: auto; - thsi has to be set from js, because of an IE9 bug */
+            }
+            div.viewbox
+            {
+                position: relative;
+                border: 3px solid #e8eef4;
+            }
+            div.viewbox table
+            {
+                border: 0px;
+            }
+                        
+            /* testview */
+            #testview
+            {
+                padding-top: 23px;
+            }
+            
+            table.testview-items td
+            {
+                vertical-align: bottom;
+                padding: 0px 1px 0px 1px;
+            }
+            td.right-padding, td.left-padding
+            {
+                width: 25px;
+                min-width: 25px;
+            }
+            table.testview-items a.bar
+            {
+                width: 5px;
+            }
+            table.testview-items tr.testview-items-row
+            {
+                height: 60px;
+            }
+            
+            /* scale */
+            table.vertical-scale 
+            {
+                position: absolute;
+                top: 23px;
+                left: 0px;
+                width: 100%;
+                z-index: -100;
+            }
+            table.vertical-scale td, tr.horizontal-scale td
+            {
+                font-size: 60%;
+                line-height: normal;
+            }
+            table.vertical-scale tr.scale-max, table.vertical-scale tr.scale-mid 
+            {
+                height: 30px;
+            }
+            tr.horizontal-scale, table.vertical-scale tr.scale-min 
+            {
+                height: 12px;
+            }
+            
+            td.scale-max-label, td.scale-mid-label, td.scale-min-label
+            {
+                border-top: solid 1px #E6E6E6;
+                text-align: left;
+                vertical-align: top;
+            }
+            td.scale-10-label
+            {
+                border-left: solid 1px #E6E6E6;
+                text-align: left;
+                vertical-align: bottom;
+                padding-left: 1px;
+            }
+            tr.scale-mid td, tr.scale-min td, tr.scale-max td
+            {
+                border-top: solid 1px #E6E6E6;
+            }
+           
+            
+            /* bar-control */
+            #bar-control
+            {
+                font-size: 60%;
+                line-height: normal;
+                position: absolute;
+                right: 0px;
+                top: 0px;
+            }
+            #bar-control label
+            {
+                font-weight: bold;
+                vertical-align: middle;
+            }
+            #bar-control .option
+            {
+                vertical-align: middle;
+                text-transform: lowercase;
+            }
+            #bar-control input[type="checkbox"]
+            {
+                padding: 0 2px 0 3px;
+            }
+            #bar-control input
+            {
+                vertical-align: top;
+                height: 12px;
+                margin: 0px;
+                padding: 0px;
+            }
+            #bar-control div
+            {
+                float: right;
+                margin: 3px 5px 3px 5px;
+            }
+            
+            
+            /* timeline view */
+            #timelineview
+            {
+                padding-top: 5px;
+            }
+            table.timelineview a
+            {
+                height: 20px;
+            }
+            table.timelineview td
+            {
+                vertical-align: bottom;
+                padding: 0px 1px 0px 0px;
+                border: 0px;
+            }
+            tr.thread-items-row
+            {
+                height: 25px;
+            }
+            tr.thread-items-row td
+            {
+                vertical-align: bottom;
+            }
+            td.thread-label
+            {
+                padding: 0px 6px 0px 6px;
+                text-align: right;
+                line-height: 18px;
+                vertical-align: bottom;
+            }
+            th.thread-label
+            {
+                padding: 3px 6px 0px 6px;
+                line-height: 18px;
+                text-align: left;
+                vertical-align: bottom;
+            }
+        </style>
+	</head>
+	<body>
+        <h1>Selenium Test Execution Report</h1>
+        <ul>
+            <li>Project: Selenium</li>
+            <li>Configuration: Default</li>
+            <li>Test Assemblies: Selenium.dll</li>
+            <li>Start Time: 2016/11/25 17:56:49</li>
+            <li>Duration: 00:01:04.2103619</li>
+            <li>Test Threads: 5</li>
+        </ul>
+
+        <h2>Result: 16 failed</h2>
+        <table class="testEvents">
+                <tr>
+        <th colspan="2">Success rate</th>
+        <th>Tests</th>
+        <th>Succeeded</th>
+        <th>Failed</th>
+        <th>Pending</th>
+        <th>Ignored</th>
+        <th>Skipped</th>
+    </tr>
+
+                <tr>
+            <td>
+            6%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorSucceeded" 
+                                style="width: 11px;" 
+                                title="1 succeeded" 
+                                                        />
+                    </td>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 187px;" 
+                                title="16 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>17</td>
+    <td>1</td>
+    <td>16</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+    </tr>
+
+        </table>
+        
+        <h2>Test Timeline Summary</h2>
+
+        <div id="timelineview" class="viewbox">
+            <div class="scrollable">
+                <table cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th class="thread-label" colspan="2">thread</th>
+                    </tr>
+                        <tr class="thread-items-row">
+                            <td class="thread-label" title="Machine: DYL201200058">#0</td>
+                            <td colspan="2">
+                                <table class="timelineview" cellpadding="0" cellspacing="0">
+                                    <tr>
+
+                                            <td>
+        <a
+            class="bar startupBar" 
+            style="width: 3px;" 
+                title="test thread startup" 
+        >&nbsp;</a>
+    </td>
+
+    <td>
+        <a
+            class="bar colorSucceeded" 
+            style="width: 65px;" 
+                title="The website display successfully (in SpecFlowFeature1)" 
+                href="#t1083707052.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Test Selenium Grid (in SpecFlowFeature1)" 
+                href="#t-1540517793.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Test Saucelabs, Firefox (in SpecFlowFeature1)" 
+                href="#t-111469057.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Test Saucelabs, Safari (in SpecFlowFeature1)" 
+                href="#t-289019272.0"
+        >&nbsp;</a>
+    </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="thread-items-row">
+                            <td class="thread-label" title="Machine: DYL201200058">#1</td>
+                            <td colspan="2">
+                                <table class="timelineview" cellpadding="0" cellspacing="0">
+                                    <tr>
+
+                                            <td>
+        <a
+            class="bar startupBar" 
+            style="width: 3px;" 
+                title="test thread startup" 
+        >&nbsp;</a>
+    </td>
+
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 82px;" 
+                title="Check the header text (in SpecFlowFeature1)" 
+                href="#t-620348456.0"
+        >&nbsp;</a>
+    </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="thread-items-row">
+                            <td class="thread-label" title="Machine: DYL201200058">#2</td>
+                            <td colspan="2">
+                                <table class="timelineview" cellpadding="0" cellspacing="0">
+                                    <tr>
+
+                                            <td>
+        <a
+            class="bar startupBar" 
+            style="width: 3px;" 
+                title="test thread startup" 
+        >&nbsp;</a>
+    </td>
+
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Check the default value of Topic Interested (in SpecFlowFeature1)" 
+                href="#t814654437.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 90px;" 
+                title="Check the mandatory in the webform (in SpecFlowFeature1)" 
+                href="#t-2047818777.0"
+        >&nbsp;</a>
+    </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="thread-items-row">
+                            <td class="thread-label" title="Machine: DYL201200058">#3</td>
+                            <td colspan="2">
+                                <table class="timelineview" cellpadding="0" cellspacing="0">
+                                    <tr>
+
+                                            <td>
+        <a
+            class="bar startupBar" 
+            style="width: 3px;" 
+                title="test thread startup" 
+        >&nbsp;</a>
+    </td>
+
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="The CONTACT US page displayed (in SpecFlowFeature1)" 
+                href="#t-549769810.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Check the default value of Join us (in SpecFlowFeature1)" 
+                href="#t-1878972253.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 65px;" 
+                title="Input the whole data to field except &quot;Email&quot; and click submit button (in SpecFlowFeature1)" 
+                href="#t2033928510.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Test Saucelabs, Chrome (in SpecFlowFeature1)" 
+                href="#t-41442728.0"
+        >&nbsp;</a>
+    </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr class="thread-items-row">
+                            <td class="thread-label" title="Machine: DYL201200058">#4</td>
+                            <td colspan="2">
+                                <table class="timelineview" cellpadding="0" cellspacing="0">
+                                    <tr>
+
+                                            <td>
+        <a
+            class="bar startupBar" 
+            style="width: 3px;" 
+                title="test thread startup" 
+        >&nbsp;</a>
+    </td>
+
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Check all the selects in Topic Interested (in SpecFlowFeature1)" 
+                href="#t1271086281.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Input test to Email and move course to other item (in SpecFlowFeature1)" 
+                href="#t353212611.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Input the right value to Email and clikc submit button (in SpecFlowFeature1)" 
+                href="#t429473695.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 3px;" 
+                title="Click Go back to the form (in SpecFlowFeature1)" 
+                href="#t-2043668636.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 31px;" 
+                title="Click Login on the top (in SpecFlowFeature1)" 
+                href="#t-1440569403.0"
+        >&nbsp;</a>
+    </td>
+    <td>
+        <a
+            class="bar colorFailed" 
+            style="width: 66px;" 
+                title="Input the value username and password and click Log in (in SpecFlowFeature1)" 
+                href="#t-1357577535.0"
+        >&nbsp;</a>
+    </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    <tr class="horizontal-scale">
+                        <td>&nbsp;</td>
+                            <td class="scale-10-label" style="width: 70px;min-width: 70px;">0s</td>
+                        <td class="scale-10-label">38s</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <h2>Test Result View</h2>
+        <div id="testview" class="viewbox">
+            <div id="bar-control">
+                <div id="bar-control-sort">
+                    <label>sort by:</label>
+                    <span class="option"><input type="radio" name="barSortOrder" value="exectime" />Time</span>
+                    <span class="option"><input type="radio" name="barSortOrder" value="acttime" />Act Time</span>
+                    <span class="option"><input type="radio" name="barSortOrder" value="order" />Execution</span>
+                    <span class="option"><input type="radio" name="barSortOrder" value="rescode" checked="checked" />Result</span>
+                    <span class="option"><input type="checkbox" name="barSortDesc" id="barSortDesc" checked="checked" />desc</span>
+                </div>
+                <div id="bar-control-heights">
+                    <label>heights:</label>
+                    <span class="option"><input type="radio" checked="checked" name="barHeight" value="exectime" />Time</span>
+                    <span class="option"><input type="radio" name="barHeight" value="acttime" />Act Time</span>
+                    
+                </div>
+            </div>
+            <table class="vertical-scale" cellpadding="0" cellspacing="0">
+                <tr class="scale-max">
+                    <td class="left-padding scale-max-label">&nbsp;</td>
+                    <td colspan="17">&nbsp;</td>
+                    <td class="right-padding">&nbsp;</td>
+                </tr>
+                <tr class="scale-mid">
+                    <td class="left-padding scale-mid-label">&nbsp;</td>
+                    <td colspan="17">&nbsp;</td>
+                    <td class="right-padding">&nbsp;</td>
+                </tr>
+                <tr class="scale-min">
+                    <td class="left-padding scale-min-label">&nbsp;</td>
+                    <td colspan="17">&nbsp;</td>
+                    <td class="right-padding">&nbsp;</td>
+                </tr>
+            </table>
+            <div class="scrollable">
+                <table class="testview-items" cellpadding="0" cellspacing="0">
+                    <tr class="testview-items-row">
+                        <td class="left-padding">&nbsp;</td>
+    <td class="testview-item" 
+        data-sr-exectime="37.5406062" data-sr-rescode="110" data-sr-order="0" data-sr-acttime="0.37">
+        <a
+            class="bar colorSucceeded" 
+            style="height: 43px;"
+            title="The website display successfully (in SpecFlowFeature1)"
+            href="#t1083707052.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="1.2028463" data-sr-rescode="440" data-sr-order="2" data-sr-acttime="0.001">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="The CONTACT US page displayed (in SpecFlowFeature1)"
+            href="#t-549769810.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="46.573295" data-sr-rescode="440" data-sr-order="1" data-sr-acttime="0.0">
+        <a
+            class="bar colorFailed" 
+            style="height: 54px;"
+            title="Check the header text (in SpecFlowFeature1)"
+            href="#t-620348456.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="1.1963421" data-sr-rescode="440" data-sr-order="4" data-sr-acttime="0">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Check the default value of Topic Interested (in SpecFlowFeature1)"
+            href="#t814654437.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="1.2083503" data-sr-rescode="440" data-sr-order="3" data-sr-acttime="0.001">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Check all the selects in Topic Interested (in SpecFlowFeature1)"
+            href="#t1271086281.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="0.0195139" data-sr-rescode="440" data-sr-order="6" data-sr-acttime="0.0">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Check the default value of Join us (in SpecFlowFeature1)"
+            href="#t-1878972253.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="51.9929472" data-sr-rescode="440" data-sr-order="5" data-sr-acttime="0.0">
+        <a
+            class="bar colorFailed" 
+            style="height: 60px;"
+            title="Check the mandatory in the webform (in SpecFlowFeature1)"
+            href="#t-2047818777.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="0.0145101" data-sr-rescode="440" data-sr-order="7" data-sr-acttime="0.001">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Input test to Email and move course to other item (in SpecFlowFeature1)"
+            href="#t353212611.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="40.5224866" data-sr-rescode="440" data-sr-order="8" data-sr-acttime="0.0">
+        <a
+            class="bar colorFailed" 
+            style="height: 47px;"
+            title="Input the whole data to field except &quot;Email&quot; and click submit button (in SpecFlowFeature1)"
+            href="#t2033928510.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="0.0055039" data-sr-rescode="440" data-sr-order="9" data-sr-acttime="0.0">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Input the right value to Email and clikc submit button (in SpecFlowFeature1)"
+            href="#t429473695.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="0.0180123" data-sr-rescode="440" data-sr-order="10" data-sr-acttime="0">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Click Go back to the form (in SpecFlowFeature1)"
+            href="#t-2043668636.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="26.7440053" data-sr-rescode="440" data-sr-order="11" data-sr-acttime="0.0">
+        <a
+            class="bar colorFailed" 
+            style="height: 31px;"
+            title="Click Login on the top (in SpecFlowFeature1)"
+            href="#t-1440569403.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="35.8831654" data-sr-rescode="440" data-sr-order="12" data-sr-acttime="0.001">
+        <a
+            class="bar colorFailed" 
+            style="height: 41px;"
+            title="Input the value username and password and click Log in (in SpecFlowFeature1)"
+            href="#t-1357577535.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="2.0938362" data-sr-rescode="440" data-sr-order="13" data-sr-acttime="0.0">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Test Selenium Grid (in SpecFlowFeature1)"
+            href="#t-1540517793.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="0.8662346" data-sr-rescode="440" data-sr-order="14" data-sr-acttime="0.0">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Test Saucelabs, Firefox (in SpecFlowFeature1)"
+            href="#t-111469057.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="0.773617" data-sr-rescode="440" data-sr-order="16" data-sr-acttime="0">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Test Saucelabs, Chrome (in SpecFlowFeature1)"
+            href="#t-41442728.0">&nbsp;</a>
+    </td>
+    <td class="testview-item" 
+        data-sr-exectime="0.4802924" data-sr-rescode="440" data-sr-order="15" data-sr-acttime="0.001">
+        <a
+            class="bar colorFailed" 
+            style="height: 2px;"
+            title="Test Saucelabs, Safari (in SpecFlowFeature1)"
+            href="#t-289019272.0">&nbsp;</a>
+    </td>
+                        <td class="right-padding">&nbsp;</td>
+                    </tr>
+                    <tr class="horizontal-scale">
+                        <td class="left-padding">&nbsp;</td>
+                        <td colspan="10">&nbsp;</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <h2>Feature Summary</h2>
+        <table class="testEvents">
+                <tr>
+            <th>Feature</th>
+        <th colspan="2">Success rate</th>
+        <th>Tests</th>
+        <th>Succeeded</th>
+        <th>Failed</th>
+        <th>Pending</th>
+        <th>Ignored</th>
+        <th>Skipped</th>
+    </tr>
+
+    <tr>
+            <td><a href="#f1587854905">SpecFlowFeature1</a></td>
+            <td>
+            6%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorSucceeded" 
+                                style="width: 11px;" 
+                                title="1 succeeded" 
+                                                        />
+                    </td>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 187px;" 
+                                title="16 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>17</td>
+    <td>1</td>
+    <td>16</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+    </tr>
+        </table>
+
+        <a name="error_summary" />
+        <h2>Error Summary</h2>
+        <table class="testEvents">
+                <tr>
+            <th>Test</th>
+        <th colspan="2">Success rate</th>
+        <th>Tests</th>
+        <th>Succeeded</th>
+        <th>Failed</th>
+        <th>Pending</th>
+        <th>Ignored</th>
+        <th>Skipped</th>
+    </tr>
+
+                <tr>
+                    <td>
+                        <a href="#t-549769810.0">The CONTACT US page displayed (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-620348456.0">Check the header text (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: Unable to bind to locking port 7054 within 45000 milliseconds</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t814654437.0">Check the default value of Topic Interested (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t1271086281.0">Check all the selects in Topic Interested (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-1878972253.0">Check the default value of Join us (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-2047818777.0">Check the mandatory in the webform (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: Object reference not set to an instance of an object.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t353212611.0">Input test to Email and move course to other item (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t2033928510.0">Input the whole data to field except &quot;Email&quot; and click submit button (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: Object reference not set to an instance of an object.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t429473695.0">Input the right value to Email and clikc submit button (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-2043668636.0">Click Go back to the form (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-1440569403.0">Click Login on the top (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: Object reference not set to an instance of an object.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-1357577535.0">Input the value username and password and click Log in (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: Object reference not set to an instance of an object.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-1540517793.0">Test Selenium Grid (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: Unexpected error. System.Net.WebException: Unable to connect to the remote server ---&gt; System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it 127.0.0.1:4444
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket&amp; socket, IPAddress&amp; address, ConnectSocketState state, IAsyncResult asyncResult, Exception&amp; exception)
+   --- End of inner exception stack trace ---
+   at System.Net.HttpWebRequest.GetRequestStream(TransportContext&amp; context)
+   at System.Net.HttpWebRequest.GetRequestStream()
+   at OpenQA.Selenium.Remote.HttpCommandExecutor.Execute(Command commandToExecute)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-111469057.0">Test Saucelabs, Firefox (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-41442728.0">Test Saucelabs, Chrome (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</div></td>
+                </tr>
+                <tr>
+                    <td>
+                        <a href="#t-289019272.0">Test Saucelabs, Safari (in Selenium, SpecFlowFeature1)</a>
+                    </td>
+                        <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                </tr>
+                <tr>
+                    <td colspan="9" style="padding-left: 20px;"><div class="errorMessage">Error: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</div></td>
+                </tr>
+        </table>
+
+        <h2>Scenario Summary</h2>
+            <a name="f1587854905" />
+            <h3>Feature: SpecFlowFeature1</h3>
+            <table class="testEvents">
+                    <tr>
+            <th>Test</th>
+        <th colspan="2">Success rate</th>
+        <th>Tests</th>
+        <th>Succeeded</th>
+        <th>Failed</th>
+        <th>Pending</th>
+        <th>Ignored</th>
+        <th>Skipped</th>
+    </tr>
+
+                    <tr>
+                        <td>
+                                    <a href="#t1083707052.0">Scenario: The website display successfully</a>
+
+                        </td>
+                            <td>
+            100%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorSucceeded" 
+                                style="width: 199px;" 
+                                title="1 succeeded" 
+                                                        />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-549769810.0">Scenario: The CONTACT US page displayed</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-620348456.0">Scenario: Check the header text</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t814654437.0">Scenario: Check the default value of Topic Interested</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t1271086281.0">Scenario: Check all the selects in Topic Interested</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-1878972253.0">Scenario: Check the default value of Join us</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-2047818777.0">Scenario: Check the mandatory in the webform</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t353212611.0">Scenario: Input test to Email and move course to other item</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t2033928510.0">Scenario: Input the whole data to field except &quot;Email&quot; and click submit button</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t429473695.0">Scenario: Input the right value to Email and clikc submit button</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-2043668636.0">Scenario: Click Go back to the form</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-1440569403.0">Scenario: Click Login on the top</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-1357577535.0">Scenario: Input the value username and password and click Log in</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-1540517793.0">Scenario: Test Selenium Grid</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-111469057.0">Scenario: Test Saucelabs, Firefox</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-41442728.0">Scenario: Test Saucelabs, Chrome</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                                    <a href="#t-289019272.0">Scenario: Test Saucelabs, Safari</a>
+
+                        </td>
+                            <td>
+            0%
+    </td>
+    <td>
+        <table class="timelineview" cellpadding="0" cellspacing="0">
+            <tr>
+                    <td>
+                        <a class="bar colorFailed" 
+                                style="width: 199px;" 
+                                title="1 failed" 
+                                                    href="#error_summary"
+                                />
+                    </td>
+            </tr>
+        </table>
+    </td>
+    <td>1</td>
+    <td>0</td>
+    <td>1</td>
+    <td>0</td>
+    <td>0</td>
+    <td>0</td>
+
+                    </tr>
+            </table>
+
+        <h2>Execution Details</h2>
+            <a name="t1083707052.0" />
+            <h3>Scenario: The website display successfully (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, selenium-01
+                </div>
+            <ul>
+                <li>Status: Succeeded</li>
+                <li>Start time: 2016/11/25 17:56:49</li>
+                <li>Execution time (sec): 37.5406062</li>
+                <li>Thread: #0</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - The website display successfully] -->
+                            <pre class="log">Start the Firefox driver
+Set implicitly wait timeout 30
+done: SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() (13.0s)</pre>
+                        </td>
+                        <td>Succeeded in 13.222s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - The website display successfully] -->
+                            <pre class="log">Go to http://10.0.30.2:8082/
+done: SpecFlowFeature1Steps.GivenForwardTo(&quot;http://10.0.30.2:...&quot;) (0.4s)</pre>
+                        </td>
+                        <td>Succeeded in 0.37s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then The website display successfully</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - The website display successfully] -->
+                            <pre class="log">Driver the title
+==========ShouldBeEqualsTo==========
+Expected value is: DILATO | The new way to extend |
+Actual value is: 页面载入出错
+=============================
+done: SpecFlowFeature1Steps.ThenTheWebsiteDisplaySuccessfully() (21.1s)</pre>
+                        </td>
+                        <td>Succeeded in 21.138s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - The website display successfully] -->
+                            <pre class="log">Quit the driver</pre>
+                        </td>
+                        <td>Succeeded in 1.934s</td>
+                    </tr>
+            </table>
+            <a name="t-620348456.0" />
+            <h3>Scenario: Check the header text (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, selenium-03
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:49</li>
+                <li>Execution time (sec): 46.573295</li>
+                <li>Thread: #1</li>
+                <li>Error: Unable to bind to locking port 7054 within 45000 milliseconds</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the header text] -->
+                            <pre class="log">Start the Firefox driver
+error: Unable to bind to locking port 7054 within 45000 milliseconds</pre>
+                                <div class="errorMessage">Unable to bind to locking port 7054 within 45000 milliseconds</div>
+                                <pre class="stackTrace">OpenQA.Selenium.WebDriverException: Unable to bind to locking port 7054 within 45000 milliseconds
+   at OpenQA.Selenium.Firefox.Internal.SocketLock.LockObject(TimeSpan timeout)
+   at OpenQA.Selenium.Firefox.FirefoxDriverServer.Start()
+   at OpenQA.Selenium.Firefox.FirefoxDriverCommandExecutor.Execute(Command commandToExecute)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.StartSession(ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Remote.RemoteWebDriver..ctor(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Firefox.FirefoxDriver..ctor(FirefoxBinary binary, FirefoxProfile profile)
+   at MyDriver.WebDriver..ctor(Browser browser, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 21
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 30
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.CheckTheHeaderText() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 22
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 45.681s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the header text] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.004s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Check the header text] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then Check the header text</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Check the header text] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.009s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Check the header text] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.003s</td>
+                    </tr>
+            </table>
+            <a name="t-549769810.0" />
+            <h3>Scenario: The CONTACT US page displayed (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, selenium-02
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:49</li>
+                <li>Execution time (sec): 1.2028463</li>
+                <li>Thread: #3</li>
+                <li>Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - The CONTACT US page displayed] -->
+                            <pre class="log">error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</pre>
+                                <div class="errorMessage">The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div>
+                                <pre class="stackTrace">System.IO.IOException: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamWriter.CreateFile(String path, Boolean append, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append)
+   at Support.Log.AppendLogfile(String value) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 30
+   at Support.Log.DoLog(String logDetail) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 12
+   at MyDriver.WebDriver..ctor(Browser browser, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 17
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 30
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.TheCONTACTUSPageDisplayed() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 15
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.289s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - The CONTACT US page displayed] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.007s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - The CONTACT US page displayed] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then The CONTACT US page displayed</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - The CONTACT US page displayed] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.015s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - The CONTACT US page displayed] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.003s</td>
+                    </tr>
+            </table>
+            <a name="t1271086281.0" />
+            <h3>Scenario: Check all the selects in Topic Interested (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-05
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:49</li>
+                <li>Execution time (sec): 1.2083503</li>
+                <li>Thread: #4</li>
+                <li>Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check all the selects in Topic Interested] -->
+                            <pre class="log">error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</pre>
+                                <div class="errorMessage">The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div>
+                                <pre class="stackTrace">System.IO.IOException: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamWriter.CreateFile(String path, Boolean append, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append)
+   at Support.Log.AppendLogfile(String value) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 30
+   at Support.Log.DoLog(String logDetail) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 12
+   at MyDriver.WebDriver..ctor(Browser browser, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 17
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 30
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.CheckAllTheSelectsInTopicInterested() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 38
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.283s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check all the selects in Topic Interested] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.005s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check all the selects in Topic Interested] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When I check the Topic Interested dropdown list</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Check all the selects in Topic Interested] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then all options should be &#39;Cloud Testing、Embedded System Testing、Globalization Testing、Offshore Test Center、System Integration Testing、Test Automation、Function Testing、Mobile Testing、Cloud Services、SKYPALACE、Mobile Test Automation、Test Automation Framework、IaaS Cloud Enablement、Desktop Virtualization、Others&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Check all the selects in Topic Interested] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And all options can be selected successfully</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Check all the selects in Topic Interested] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.009s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Check all the selects in Topic Interested] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.003s</td>
+                    </tr>
+            </table>
+            <a name="t814654437.0" />
+            <h3>Scenario: Check the default value of Topic Interested (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, selenium-04
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:49</li>
+                <li>Execution time (sec): 1.1963421</li>
+                <li>Thread: #2</li>
+                <li>Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the default value of Topic Interested] -->
+                            <pre class="log">error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</pre>
+                                <div class="errorMessage">The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div>
+                                <pre class="stackTrace">System.IO.IOException: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamWriter.CreateFile(String path, Boolean append, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append)
+   at Support.Log.AppendLogfile(String value) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 30
+   at Support.Log.DoLog(String logDetail) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 12
+   at MyDriver.WebDriver..ctor(Browser browser, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 17
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 30
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.CheckTheDefaultValueOfTopicInterested() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 29
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.276s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the default value of Topic Interested] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.016s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Check the default value of Topic Interested] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then the default value of Topic Interested is &#39;Cloud Testing&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Check the default value of Topic Interested] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.011s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Check the default value of Topic Interested] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.003s</td>
+                    </tr>
+            </table>
+            <a name="t-2047818777.0" />
+            <h3>Scenario: Check the mandatory in the webform (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-07
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:51</li>
+                <li>Execution time (sec): 51.9929472</li>
+                <li>Thread: #2</li>
+                <li>Error: Object reference not set to an instance of an object.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the mandatory in the webform] -->
+                            <pre class="log">warning: The previous ScenarioContext was not disposed.</pre>
+                        </td>
+                        <td>Succeeded in 0.011s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the mandatory in the webform] -->
+                            <pre class="log">Start the Firefox driver
+Set implicitly wait timeout 30
+done: SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() (49.8s)</pre>
+                        </td>
+                        <td>Succeeded in 49.77s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the mandatory in the webform] -->
+                            <pre class="log">Go to http://10.0.30.2:8082/
+done: SpecFlowFeature1Steps.GivenForwardTo(&quot;http://10.0.30.2:...&quot;) (0.2s)</pre>
+                        </td>
+                        <td>Succeeded in 0.178s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the mandatory in the webform] -->
+                            <pre class="log">error: Object reference not set to an instance of an object.</pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at PageObject.HomePage.get_ContactUS() in d:\0陈小龙\陈小龙-Selenium\PageObject\HomePage.cs:line 16
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenINavigateToContactUsPage() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 60
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.CheckTheMandatoryInTheWebform() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 53
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.006s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When I click the Submit button</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Check the mandatory in the webform] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then Prompt error message</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Check the mandatory in the webform] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Check the mandatory in the webform] -->
+                            <pre class="log">Quit the driver</pre>
+                        </td>
+                        <td>Succeeded in 2.025s</td>
+                    </tr>
+            </table>
+            <a name="t-1878972253.0" />
+            <h3>Scenario: Check the default value of Join us (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, selenium-06
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:51</li>
+                <li>Execution time (sec): 0.0195139</li>
+                <li>Thread: #3</li>
+                <li>Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the default value of Join us] -->
+                            <pre class="log">warning: The previous ScenarioContext was not disposed.</pre>
+                        </td>
+                        <td>Succeeded in 0.016s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the default value of Join us] -->
+                            <pre class="log">error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</pre>
+                                <div class="errorMessage">The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div>
+                                <pre class="stackTrace">System.IO.IOException: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamWriter.CreateFile(String path, Boolean append, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append)
+   at Support.Log.AppendLogfile(String value) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 30
+   at Support.Log.DoLog(String logDetail) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 12
+   at MyDriver.WebDriver..ctor(Browser browser, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 17
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 30
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.CheckTheDefaultValueOfJoinUs() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 45
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Check the default value of Join us] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Check the default value of Join us] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then the Join us is selected</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Check the default value of Join us] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Check the default value of Join us] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.001s</td>
+                    </tr>
+            </table>
+            <a name="t353212611.0" />
+            <h3>Scenario: Input test to Email and move course to other item (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-08
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:51</li>
+                <li>Execution time (sec): 0.0145101</li>
+                <li>Thread: #4</li>
+                <li>Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input test to Email and move course to other item] -->
+                            <pre class="log">warning: The previous ScenarioContext was not disposed.</pre>
+                        </td>
+                        <td>Succeeded in 0.007s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input test to Email and move course to other item] -->
+                            <pre class="log">error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</pre>
+                                <div class="errorMessage">The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div>
+                                <pre class="stackTrace">System.IO.IOException: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamWriter.CreateFile(String path, Boolean append, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append)
+   at Support.Log.AppendLogfile(String value) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 30
+   at Support.Log.DoLog(String logDetail) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 12
+   at MyDriver.WebDriver..ctor(Browser browser, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 17
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 30
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.InputTestToEmailAndMoveCourseToOtherItem() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 63
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.002s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input test to Email and move course to other item] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input test to Email and move course to other item] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When Input &quot;test&quot; to Email and move course to other item</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Input test to Email and move course to other item] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I click the Submit button</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Input test to Email and move course to other item] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then The data can not be saved</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Input test to Email and move course to other item] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.002s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Input test to Email and move course to other item] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.001s</td>
+                    </tr>
+            </table>
+            <a name="t2033928510.0" />
+            <h3>Scenario: Input the whole data to field except &quot;Email&quot; and click submit button (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-09
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:51</li>
+                <li>Execution time (sec): 40.5224866</li>
+                <li>Thread: #3</li>
+                <li>Error: Object reference not set to an instance of an object.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the whole data to field except &quot;Email&quot; and click submit button] -->
+                            <pre class="log">warning: The previous ScenarioContext was not disposed.</pre>
+                        </td>
+                        <td>Succeeded in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the whole data to field except &quot;Email&quot; and click submit button] -->
+                            <pre class="log">Start the Firefox driver
+Set implicitly wait timeout 30
+done: SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() (38.3s)</pre>
+                        </td>
+                        <td>Succeeded in 38.254s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the whole data to field except &quot;Email&quot; and click submit button] -->
+                            <pre class="log">Go to http://10.0.30.2:8082/
+done: SpecFlowFeature1Steps.GivenForwardTo(&quot;http://10.0.30.2:...&quot;) (0.1s)</pre>
+                        </td>
+                        <td>Succeeded in 0.148s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the whole data to field except &quot;Email&quot; and click submit button] -->
+                            <pre class="log">error: Object reference not set to an instance of an object.</pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at PageObject.HomePage.get_ContactUS() in d:\0陈小龙\陈小龙-Selenium\PageObject\HomePage.cs:line 16
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenINavigateToContactUsPage() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 60
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.InputTheWholeDataToFieldExceptEmailAndClickSubmitButton() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 72
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.006s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When Input &quot; &quot; to Email and move course to other item</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Input the whole data to field except &quot;Email&quot; and click submit button] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I click the Submit button</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Input the whole data to field except &quot;Email&quot; and click submit button] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then Check the warning massage Email field is required</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Input the whole data to field except &quot;Email&quot; and click submit button] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Input the whole data to field except &quot;Email&quot; and click submit button] -->
+                            <pre class="log">Quit the driver</pre>
+                        </td>
+                        <td>Succeeded in 2.113s</td>
+                    </tr>
+            </table>
+            <a name="t429473695.0" />
+            <h3>Scenario: Input the right value to Email and clikc submit button (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-10
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:51</li>
+                <li>Execution time (sec): 0.0055039</li>
+                <li>Thread: #4</li>
+                <li>Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the right value to Email and clikc submit button] -->
+                            <pre class="log">warning: The previous ScenarioContext was not disposed.</pre>
+                        </td>
+                        <td>Succeeded in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the right value to Email and clikc submit button] -->
+                            <pre class="log">error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</pre>
+                                <div class="errorMessage">The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div>
+                                <pre class="stackTrace">System.IO.IOException: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamWriter.CreateFile(String path, Boolean append, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append)
+   at Support.Log.AppendLogfile(String value) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 30
+   at Support.Log.DoLog(String logDetail) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 12
+   at MyDriver.WebDriver..ctor(Browser browser, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 17
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 30
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.InputTheRightValueToEmailAndClikcSubmitButton() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 82
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.002s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the right value to Email and clikc submit button] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the right value to Email and clikc submit button] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When Input &quot;xiaolong.chen@dilatoit.com&quot; to Email and move course to other item</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Input the right value to Email and clikc submit button] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I click the Submit button</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Input the right value to Email and clikc submit button] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then The data saved successfully with &quot;Thank you,your submission has been received&quot;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Input the right value to Email and clikc submit button] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Input the right value to Email and clikc submit button] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.001s</td>
+                    </tr>
+            </table>
+            <a name="t-2043668636.0" />
+            <h3>Scenario: Click Go back to the form (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-11
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:51</li>
+                <li>Execution time (sec): 0.0180123</li>
+                <li>Thread: #4</li>
+                <li>Error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Click Go back to the form] -->
+                            <pre class="log">warning: The previous ScenarioContext was not disposed.</pre>
+                        </td>
+                        <td>Succeeded in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Click Go back to the form] -->
+                            <pre class="log">error: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</pre>
+                                <div class="errorMessage">The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.</div>
+                                <pre class="stackTrace">System.IO.IOException: The process cannot access the file &#39;C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\2016-11-25-17-56-50-93-logFile.txt&#39; because it is being used by another process.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileStream.Init(String path, FileMode mode, FileAccess access, Int32 rights, Boolean useRights, FileShare share, Int32 bufferSize, FileOptions options, SECURITY_ATTRIBUTES secAttrs, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.FileStream..ctor(String path, FileMode mode, FileAccess access, FileShare share, Int32 bufferSize, FileOptions options, String msgPath, Boolean bFromProxy, Boolean useLongPath, Boolean checkHost)
+   at System.IO.StreamWriter.CreateFile(String path, Boolean append, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append, Encoding encoding, Int32 bufferSize, Boolean checkHost)
+   at System.IO.StreamWriter..ctor(String path, Boolean append)
+   at Support.Log.AppendLogfile(String value) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 30
+   at Support.Log.DoLog(String logDetail) in d:\0陈小龙\陈小龙-Selenium\Support\Log.cs:line 12
+   at MyDriver.WebDriver..ctor(Browser browser, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 17
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 30
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ClickGoBackToTheForm() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 93
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.002s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Click Go back to the form] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Click Go back to the form] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When Input &quot;xiaolong.chen@dilatoit.com&quot; to Email and move course to other item</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Click Go back to the form] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I click the Submit button</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Click Go back to the form] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And click the Go back to the form button</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Click Go back to the form] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then The edit page displayed</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Click Go back to the form] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Click Go back to the form] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.015s</td>
+                    </tr>
+            </table>
+            <a name="t-1440569403.0" />
+            <h3>Scenario: Click Login on the top (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-12
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:56:51</li>
+                <li>Execution time (sec): 26.7440053</li>
+                <li>Thread: #4</li>
+                <li>Error: Object reference not set to an instance of an object.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Click Login on the top] -->
+                            <pre class="log">warning: The previous ScenarioContext was not disposed.</pre>
+                        </td>
+                        <td>Succeeded in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Click Login on the top] -->
+                            <pre class="log">Start the Firefox driver
+Set implicitly wait timeout 30
+done: SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() (24.7s)</pre>
+                        </td>
+                        <td>Succeeded in 24.651s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Click Login on the top] -->
+                            <pre class="log">Go to http://10.0.30.2:8082/
+done: SpecFlowFeature1Steps.GivenForwardTo(&quot;http://10.0.30.2:...&quot;) (0.1s)</pre>
+                        </td>
+                        <td>Succeeded in 0.101s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Click Login on the top] -->
+                            <pre class="log">error: Object reference not set to an instance of an object.</pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at PageObject.HomePage.get_ContactUS() in d:\0陈小龙\陈小龙-Selenium\PageObject\HomePage.cs:line 16
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenINavigateToContactUsPage() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 60
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ClickLoginOnTheTop() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 102
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.004s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When clcik the Login button</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Click Login on the top] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then Check the login page displayed</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Click Login on the top] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Click Login on the top] -->
+                            <pre class="log">Quit the driver</pre>
+                        </td>
+                        <td>Succeeded in 1.986s</td>
+                    </tr>
+            </table>
+            <a name="t-1357577535.0" />
+            <h3>Scenario: Input the value username and password and click Log in (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-13
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:57:17</li>
+                <li>Execution time (sec): 35.8831654</li>
+                <li>Thread: #4</li>
+                <li>Error: Object reference not set to an instance of an object.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I choose local firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the value username and password and click Log in] -->
+                            <pre class="log">Start the Firefox driver
+Set implicitly wait timeout 30
+done: SpecFlowFeature1Steps.GivenIChooseLocalFirefoxToStart() (33.8s)</pre>
+                        </td>
+                        <td>Succeeded in 33.838s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the value username and password and click Log in] -->
+                            <pre class="log">Go to http://10.0.30.2:8082/
+done: SpecFlowFeature1Steps.GivenForwardTo(&quot;http://10.0.30.2:...&quot;) (0.1s)</pre>
+                        </td>
+                        <td>Succeeded in 0.127s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">And I navigate to contact us page</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Input the value username and password and click Log in] -->
+                            <pre class="log">error: Object reference not set to an instance of an object.</pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at PageObject.HomePage.get_ContactUS() in d:\0陈小龙\陈小龙-Selenium\PageObject\HomePage.cs:line 16
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenINavigateToContactUsPage() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 60
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.InputTheValueUsernameAndPasswordAndClickLogIn() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 110
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When clcik the Login button and enter account</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Input the value username and password and click Log in] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then the login successful</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Input the value username and password and click Log in] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Input the value username and password and click Log in] -->
+                            <pre class="log">Quit the driver</pre>
+                        </td>
+                        <td>Succeeded in 1.915s</td>
+                    </tr>
+            </table>
+            <a name="t-1540517793.0" />
+            <h3>Scenario: Test Selenium Grid (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-Grid
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:57:27</li>
+                <li>Execution time (sec): 2.0938362</li>
+                <li>Thread: #0</li>
+                <li>Error: Unexpected error. System.Net.WebException: Unable to connect to the remote server ---&gt; System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it 127.0.0.1:4444
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket&amp; socket, IPAddress&amp; address, ConnectSocketState state, IAsyncResult asyncResult, Exception&amp; exception)
+   --- End of inner exception stack trace ---
+   at System.Net.HttpWebRequest.GetRequestStream(TransportContext&amp; context)
+   at System.Net.HttpWebRequest.GetRequestStream()
+   at OpenQA.Selenium.Remote.HttpCommandExecutor.Execute(Command commandToExecute)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I connect Selenium server and choose firefox to start</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Test Selenium Grid] -->
+                            <pre class="log">Start the firefox driver
+error: Unexpected error. System.Net.WebException: Unable to connect to the remote server ---&gt; System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it 127.0.0.1:4444
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket&amp; socket, IPAddress&amp; address, ConnectSocketState state, IAsyncResult asyncResult, Exception&amp; exception)
+   --- End of inner exception stack trace ---
+   at System.Net.HttpWebRequest.GetRequestStream(TransportContext&amp; context)
+   at System.Net.HttpWebRequest.GetRequestStream()
+   at OpenQA.Selenium.Remote.HttpCommandExecutor.Execute(Command commandToExecute)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)</pre>
+                                <div class="errorMessage">Unexpected error. System.Net.WebException: Unable to connect to the remote server ---&gt; System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it 127.0.0.1:4444
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket&amp; socket, IPAddress&amp; address, ConnectSocketState state, IAsyncResult asyncResult, Exception&amp; exception)
+   --- End of inner exception stack trace ---
+   at System.Net.HttpWebRequest.GetRequestStream(TransportContext&amp; context)
+   at System.Net.HttpWebRequest.GetRequestStream()
+   at OpenQA.Selenium.Remote.HttpCommandExecutor.Execute(Command commandToExecute)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)</div>
+                                <pre class="stackTrace">OpenQA.Selenium.WebDriverException: Unexpected error. System.Net.WebException: Unable to connect to the remote server ---&gt; System.Net.Sockets.SocketException: No connection could be made because the target machine actively refused it 127.0.0.1:4444
+   at System.Net.Sockets.Socket.DoConnect(EndPoint endPointSnapshot, SocketAddress socketAddress)
+   at System.Net.ServicePoint.ConnectSocketInternal(Boolean connectFailure, Socket s4, Socket s6, Socket&amp; socket, IPAddress&amp; address, ConnectSocketState state, IAsyncResult asyncResult, Exception&amp; exception)
+   --- End of inner exception stack trace ---
+   at System.Net.HttpWebRequest.GetRequestStream(TransportContext&amp; context)
+   at System.Net.HttpWebRequest.GetRequestStream()
+   at OpenQA.Selenium.Remote.HttpCommandExecutor.Execute(Command commandToExecute)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.UnpackAndThrowOnError(Response errorResponse)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.StartSession(ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Remote.RemoteWebDriver..ctor(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Remote.RemoteWebDriver..ctor(Uri remoteAddress, ICapabilities desiredCapabilities)
+   at MyDriver.WebDriver..ctor(String url, DesiredCapabilities capabilities, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 44
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIConnectSeleniumServerAndChooseFirefoxToStart() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 254
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.TestSeleniumGrid() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 117
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 2.086s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Test Selenium Grid] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then The website display successfully</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Test Selenium Grid] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.005s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Test Selenium Grid] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.001s</td>
+                    </tr>
+            </table>
+            <a name="t-111469057.0" />
+            <h3>Scenario: Test Saucelabs, Firefox (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-Remote
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:57:29</li>
+                <li>Execution time (sec): 0.8662346</li>
+                <li>Thread: #0</li>
+                <li>Error: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Test Saucelabs, Firefox] -->
+                            <pre class="log">warning: The previous ScenarioContext was not disposed.</pre>
+                        </td>
+                        <td>Succeeded in 0.002s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I connect saucelabs and choose Firefox of 47.0 at Windows 7</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Test Saucelabs, Firefox] -->
+                            <pre class="log">Start the Firefox driver
+error: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</pre>
+                                <div class="errorMessage">Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</div>
+                                <pre class="stackTrace">OpenQA.Selenium.WebDriverException: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.
+   at OpenQA.Selenium.Remote.RemoteWebDriver.UnpackAndThrowOnError(Response errorResponse)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.StartSession(ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Remote.RemoteWebDriver..ctor(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Remote.RemoteWebDriver..ctor(Uri remoteAddress, ICapabilities desiredCapabilities)
+   at MyDriver.WebDriver..ctor(String url, DesiredCapabilities capabilities, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 44
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIConnectSaucelabsAndChooseFirefoxOfAtWindows(String p0, String p1, String p2) in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 272
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.TestSaucelabs(String browser, String version, String platform, String[] exampleTags) in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 123
+   at Selenium.SpecRun.SpecFlowFeature1Feature.TestSaucelabs_Firefox() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.862s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Test Saucelabs, Firefox] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then The website display successfully</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Test Saucelabs, Firefox] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Test Saucelabs, Firefox] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.001s</td>
+                    </tr>
+            </table>
+            <a name="t-289019272.0" />
+            <h3>Scenario: Test Saucelabs, Safari (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-Remote
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:57:30</li>
+                <li>Execution time (sec): 0.4802924</li>
+                <li>Thread: #0</li>
+                <li>Error: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Test Saucelabs, Safari] -->
+                            <pre class="log">warning: The previous ScenarioContext was not disposed.</pre>
+                        </td>
+                        <td>Succeeded in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I connect saucelabs and choose Safari of 9.0 at OS X 10.11</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Test Saucelabs, Safari] -->
+                            <pre class="log">Start the Safari driver
+error: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</pre>
+                                <div class="errorMessage">Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</div>
+                                <pre class="stackTrace">OpenQA.Selenium.WebDriverException: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.
+   at OpenQA.Selenium.Remote.RemoteWebDriver.UnpackAndThrowOnError(Response errorResponse)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.StartSession(ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Remote.RemoteWebDriver..ctor(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Remote.RemoteWebDriver..ctor(Uri remoteAddress, ICapabilities desiredCapabilities)
+   at MyDriver.WebDriver..ctor(String url, DesiredCapabilities capabilities, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 44
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIConnectSaucelabsAndChooseFirefoxOfAtWindows(String p0, String p1, String p2) in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 272
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.TestSaucelabs(String browser, String version, String platform, String[] exampleTags) in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 123
+   at Selenium.SpecRun.SpecFlowFeature1Feature.TestSaucelabs_Safari() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.471s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Test Saucelabs, Safari] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then The website display successfully</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Test Saucelabs, Safari] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.004s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Test Saucelabs, Safari] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.001s</td>
+                    </tr>
+            </table>
+            <a name="t-41442728.0" />
+            <h3>Scenario: Test Saucelabs, Chrome (in Selenium, SpecFlowFeature1)</h3>
+                <div class="description">
+                    tags: TestDILATO, Selenium-Remote
+                </div>
+            <ul>
+                <li>Status: Failed</li>
+                <li>Start time: 2016/11/25 17:57:31</li>
+                <li>Execution time (sec): 0.773617</li>
+                <li>Thread: #3</li>
+                <li>Error: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</li>
+            </ul>
+            <table class="testEvents">
+                <tr>
+                    <th>Steps</th>
+                    <th>Trace</th>
+                    <th>Result</th>
+                </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Given I connect saucelabs and choose Chrome of 50.0 at Windows 10</pre>
+                        </td>
+                        <td>
+                            <!-- [TestArrange: Scenario - Test Saucelabs, Chrome] -->
+                            <pre class="log">Start the Chrome driver
+error: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</pre>
+                                <div class="errorMessage">Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.</div>
+                                <pre class="stackTrace">OpenQA.Selenium.WebDriverException: Unexpected error. Uh oh, you&#39;ve run out of minutes!
+Please visit https://saucelabs.com/pricing to purchase a subscription.
+   at OpenQA.Selenium.Remote.RemoteWebDriver.UnpackAndThrowOnError(Response errorResponse)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.Execute(String driverCommandToExecute, Dictionary`2 parameters)
+   at OpenQA.Selenium.Remote.RemoteWebDriver.StartSession(ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Remote.RemoteWebDriver..ctor(ICommandExecutor commandExecutor, ICapabilities desiredCapabilities)
+   at OpenQA.Selenium.Remote.RemoteWebDriver..ctor(Uri remoteAddress, ICapabilities desiredCapabilities)
+   at MyDriver.WebDriver..ctor(String url, DesiredCapabilities capabilities, Int32 timeoutSecond) in d:\0陈小龙\陈小龙-Selenium\MyDriver\WebDriver.cs:line 44
+   at Selenium.SpecRun.SpecFlowFeature1Steps.GivenIConnectSaucelabsAndChooseFirefoxOfAtWindows(String p0, String p1, String p2) in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 272
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStepMatch(BindingMatch match, Object[] arguments)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.ExecuteStep(StepInstance stepInstance)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnAfterLastStep()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioCleanup() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at Selenium.SpecRun.SpecFlowFeature1Feature.TestSaucelabs(String browser, String version, String platform, String[] exampleTags) in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature:line 123
+   at Selenium.SpecRun.SpecFlowFeature1Feature.TestSaucelabs_Chrome() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.769s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">When forward to &#39;http://10.0.30.2:8082/&#39;</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAct: Scenario - Test Saucelabs, Chrome] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log">Then The website display successfully</pre>
+                        </td>
+                        <td>
+                            <!-- [TestAssert: Scenario - Test Saucelabs, Chrome] -->
+                            <pre class="log">skipped because of previous errors</pre>
+                        </td>
+                        <td>Skipped in 0.001s</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <pre class="log"></pre>
+                        </td>
+                        <td>
+                            <!-- [Cleanup: Scenario - Test Saucelabs, Chrome] -->
+                            <pre class="log"></pre>
+                                <div class="errorMessage">Object reference not set to an instance of an object.</div>
+                                <pre class="stackTrace">System.NullReferenceException: Object reference not set to an instance of an object.
+   at Selenium.SpecRun.SpecFlowFeature1Steps.AfterScenario() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1Steps.cs:line 288
+   at TechTalk.SpecFlow.Bindings.BindingInvoker.InvokeBinding(IBinding binding, IContextManager contextManager, Object[] arguments, ITestTracer testTracer, TimeSpan&amp; duration)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.FireEvents(HookType bindingEvent)
+   at TechTalk.SpecFlow.Infrastructure.TestExecutionEngine.OnScenarioEnd()
+   at Selenium.SpecRun.SpecFlowFeature1Feature.ScenarioTearDown() in d:\0陈小龙\陈小龙-Selenium\Selenium\SpecRun\SpecFlowFeature1.feature.cs:line 0
+   at TechTalk.SpecRun.Framework.TaskExecutors.StaticOrInstanceMethodExecutor.ExecuteInternal(ITestThreadExecutionContext testThreadExecutionContext)
+   at TechTalk.SpecRun.Framework.TestAssemblyExecutor.ExecuteTestNodeTask(TestNode testNode, ITaskExecutor task, TraceEventType eventType)</pre>
+                        </td>
+                        <td>Failed in 0.001s</td>
+                    </tr>
+            </table>
+	</body>
+</html>
+</a><div style='position: absolute; top:0px; right:10px; z-index: 1000; text-align: right; font-size: small; color: #FF5555'>
+Generated by an evaluation version of SpecRun.<br />
+This version can be used for evaluation purposes only.<br />
+For obtaining a registered license please visit <a href='http://www.specflow.org/plus'>http://www.specflow.org/plus</a>.
+</div>

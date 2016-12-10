@@ -1,0 +1,21 @@
+2016-12-09-13:37:25 - Start the Firefox driver
+2016-12-09-13:38:02 - Set implicitly wait timeout 30
+2016-12-09-13:38:02 - Go to https://www.zennioptical.com
+2016-12-09-13:38:02 - Find element By.XPath: //ul[@id='main-nav']/li[5]
+2016-12-09-13:38:43 - Click at the element
+2016-12-09-13:38:43 - Find element By.XPath: (//a[contains(text(),'Login / Sign Up')])[2]
+2016-12-09-13:38:44 - Click at the element
+2016-12-09-13:38:44 - Find element By.Id: signIn_email
+2016-12-09-13:39:02 - Click at the element
+2016-12-09-13:39:02 - Find element By.Id: siginIn_pw
+2016-12-09-13:39:02 - Click at the element
+2016-12-09-13:39:02 - Find element By.Id: login
+2016-12-09-13:39:02 - Click at the element
+2016-12-09-13:39:08 - Driver the url
+2016-12-09-13:39:12 - ==========ShouldContain==========
+2016-12-09-13:39:12 - Expected value is: login?_requestid
+2016-12-09-13:39:12 - Actual value is: https://www.zennioptical.com/login?referUrl=%2Fdefault.jsp&_requestid=3003871
+2016-12-09-13:39:12 - =============================
+2016-12-09-13:39:12 - Find element By.XPath: //p[@class='errorHeader']
+2016-12-09-13:39:12 - Get element display text
+2016-12-09-13:39:12 - Quit the driver

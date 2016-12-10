@@ -1,0 +1,163 @@
+C:\Users\jie.sheng\Desktop\Selenium\Selenium\bin\Debug\Selenium.dll
+C:\Users\jie.sheng\Desktop\Selenium\Selenium\bin\Debug\Selenium.pdb
+C:\Users\jie.sheng\Desktop\Selenium\Selenium\bin\Debug\WebDriver.dll
+C:\Users\jie.sheng\Desktop\Selenium\Selenium\bin\Debug\WebDriver.Support.dll
+C:\Users\jie.sheng\Desktop\Selenium\Selenium\bin\Debug\WebDriver.xml
+C:\Users\jie.sheng\Desktop\Selenium\Selenium\bin\Debug\WebDriver.Support.xml
+C:\Users\jie.sheng\Desktop\Selenium\Selenium\obj\Debug\Selenium.csprojResolveAssemblyReference.cache
+C:\Users\jie.sheng\Desktop\Selenium\Selenium\obj\Debug\Selenium.dll
+C:\Users\jie.sheng\Desktop\Selenium\Selenium\obj\Debug\Selenium.pdb
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\Default.srprofile
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\Selenium.dll.config
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\Selenium.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\Selenium.pdb
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\SpecRun.SpecFlowPlugin.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\TechTalk.SpecFlow.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\TechTalk.SpecRun.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\WebDriver.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\WebDriver.Support.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\WebDriver.xml
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\bin\Debug\WebDriver.Support.xml
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\obj\Debug\Selenium.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\obj\Debug\Selenium.pdb
+C:\Users\jie.sheng\Desktop\Selenium介绍\Selenium&Specflow\Selenium\obj\Debug\Selenium.csprojResolveAssemblyReference.cache
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\Default.srprofile
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\Selenium.dll.config
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\Selenium.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\Selenium.pdb
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\SpecRun.SpecFlowPlugin.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\TechTalk.SpecFlow.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\TechTalk.SpecRun.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\WebDriver.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\WebDriver.Support.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\WebDriver.xml
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\WebDriver.Support.xml
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\obj\Debug\Selenium.csprojResolveAssemblyReference.cache
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\obj\Debug\Selenium.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\obj\Debug\Selenium.pdb
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\MyDriver.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\PageObject.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\Support.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\MyDriver.pdb
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\PageObject.pdb
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\Selenium\bin\Debug\Support.pdb
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\Default.srprofile
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\Selenium.dll.config
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\Selenium.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\Selenium.pdb
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\MyDriver.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\PageObject.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\SpecRun.SpecFlowPlugin.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\Support.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\TechTalk.SpecFlow.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\TechTalk.SpecRun.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\WebDriver.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\WebDriver.Support.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\MyDriver.pdb
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\PageObject.pdb
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\Support.pdb
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\WebDriver.xml
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\bin\Debug\WebDriver.Support.xml
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\obj\Debug\Selenium.csprojResolveAssemblyReference.cache
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\obj\Debug\Selenium.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\Selenium\obj\Debug\Selenium.pdb
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\Default.srprofile
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\Selenium.dll.config
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\Selenium.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\Selenium.pdb
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\MyDriver.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\PageObject.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\SpecRun.SpecFlowPlugin.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\Support.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\TechTalk.SpecFlow.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\TechTalk.SpecRun.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.Support.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\MyDriver.pdb
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\PageObject.pdb
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\Support.pdb
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.xml
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.Support.xml
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\obj\Debug\Selenium.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\obj\Debug\Selenium.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\Selenium\obj\Debug\Selenium.pdb
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\Default.srprofile
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\Selenium.dll.config
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\Selenium.dll
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\Selenium.pdb
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\MyDriver.dll
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\PageObject.dll
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\SpecRun.SpecFlowPlugin.dll
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\Support.dll
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\TechTalk.SpecFlow.dll
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\TechTalk.SpecRun.dll
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.dll
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.Support.dll
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\MyDriver.pdb
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\PageObject.pdb
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\Support.pdb
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.xml
+D:\0\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.Support.xml
+D:\0\陈小龙-Selenium\Selenium\obj\Debug\Selenium.csprojResolveAssemblyReference.cache
+D:\0\陈小龙-Selenium\Selenium\obj\Debug\Selenium.dll
+D:\0\陈小龙-Selenium\Selenium\obj\Debug\Selenium.pdb
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\Default.srprofile
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\Selenium.dll.config
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\Selenium.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\Selenium.pdb
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\MyDriver.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\PageObject.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\SpecRun.SpecFlowPlugin.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\Support.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\TechTalk.SpecFlow.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\TechTalk.SpecRun.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.Support.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\MyDriver.pdb
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\PageObject.pdb
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\Support.pdb
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.xml
+D:\0陈小龙\陈小龙-Selenium\Selenium\bin\Debug\WebDriver.Support.xml
+D:\0陈小龙\陈小龙-Selenium\Selenium\obj\Debug\Selenium.csprojResolveAssemblyReference.cache
+D:\0陈小龙\陈小龙-Selenium\Selenium\obj\Debug\Selenium.dll
+D:\0陈小龙\陈小龙-Selenium\Selenium\obj\Debug\Selenium.pdb
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\Default.srprofile
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\Selenium.dll.config
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\Selenium.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\Selenium.pdb
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\MyDriver.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\PageObject.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\SpecRun.SpecFlowPlugin.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\Support.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\TechTalk.SpecFlow.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\TechTalk.SpecRun.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\WebDriver.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\WebDriver.Support.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\MyDriver.pdb
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\PageObject.pdb
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\Support.pdb
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\WebDriver.xml
+C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\WebDriver.Support.xml
+C:\Users\Administrator\Desktop\Selenium\Selenium\obj\Debug\Selenium.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\Selenium\Selenium\obj\Debug\Selenium.dll
+C:\Users\Administrator\Desktop\Selenium\Selenium\obj\Debug\Selenium.pdb
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\Default.srprofile
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\Selenium.dll.config
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\Selenium.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\Selenium.pdb
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\MyDriver.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\PageObject.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\SpecRun.SpecFlowPlugin.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\Support.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\TechTalk.SpecFlow.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\TechTalk.SpecRun.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\WebDriver.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\WebDriver.Support.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\MyDriver.pdb
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\PageObject.pdb
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\Support.pdb
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\WebDriver.xml
+C:\Users\labuser\Desktop\Selenium\Selenium\bin\Debug\WebDriver.Support.xml
+C:\Users\labuser\Desktop\Selenium\Selenium\obj\Debug\Selenium.csprojResolveAssemblyReference.cache
+C:\Users\labuser\Desktop\Selenium\Selenium\obj\Debug\Selenium.dll
+C:\Users\labuser\Desktop\Selenium\Selenium\obj\Debug\Selenium.pdb

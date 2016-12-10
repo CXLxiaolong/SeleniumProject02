@@ -1,0 +1,156 @@
+﻿Discovering target: Default
+Discovering tests from assembly: C:\Users\Administrator\Desktop\Selenium\Selenium\bin\Debug\Selenium.dll
+Appdomain Disposed
+Test Suite Dump
+#0: Selenium/Default - 
+#1: Default - 
+#2: Selenium - 
+#3: login - 
+#4: Verify the workflow of My account login - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+My+account+login
+#5: Verify the workflow of My account login failed - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+My+account+login+failed
+#6: Verify the workflow of forgot password - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+forgot+password
+#7: Verify the error email address of forgot password - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+error+email+address+of+forgot+password
+#8: Verify the workflow of logout - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+logout
+#9: Verify no login account click Account Overview the jump to the login page - TestAssembly:Selenium/Feature:login/Scenario:Verify+no+login+account+click+Account+Overview+the+jump+to+the+login+page
+End: Test Suite Dump
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: testitem #4 from normal test queue 
+Thread#0:Scheduler: considering testitem #4 for thread
+Thread#0:Scheduler: using testitem #4 for thread
+Thread#0:Scheduler: Test #4 is scheduled for thread
+Thread#0:Scheduler: with testItemExecutionIndex 0
+Thread #0: creating new test thread executor for Selenium, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null (target: Default)
+Loading SpecRun type 'TechTalk.SpecRun.Framework.TestAssemblyExecutor' from: C:\Users\Administrator\Desktop\Selenium\packages\SpecRun.Runner.1.5.2\tools\TechTalk.SpecRun.Framework.Executor.dll
+Thread#0: Test #4/0 is started on thread #0
+Thread#0:B:Given I forward to the My account page
+Thread#0:T:Start the Firefox driver
+Thread#0:T:Set implicitly wait timeout 30
+Thread#0:T:Go to https://www.zennioptical.com
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:error: The HTTP request to the remote WebDriver server for URL http://localhost:7055/hub/session/cfbdf64f-f368-444b-929d-7c3b545a1961/element timed out after 60 seconds.
+Thread#0:B:When I fill in all the necessary value on the screen and login
+Thread#0:T:skipped because of previous errors
+Thread#0:B:Then The account Login successful
+Thread#0:T:skipped because of previous errors
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: testitem #5 from normal test queue 
+Thread#0:Scheduler: considering testitem #5 for thread
+Thread#0:Scheduler: using testitem #5 for thread
+Thread#0:Scheduler: Test #5 is scheduled for thread
+Thread#0:Scheduler: with testItemExecutionIndex 0
+Thread#0:T:Quit the driver
+Thread#0: Test #4/0 is finished on thread #0 as Failed within 96.6796579 seconds
+Thread#0: Test #5/0 is started on thread #0
+Thread#0:B:Given I forward to the My account page
+Thread#0:T:Start the Firefox driver
+Thread#0:T:Set implicitly wait timeout 30
+Thread#0:T:Go to https://www.zennioptical.com
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:error: The HTTP request to the remote WebDriver server for URL http://localhost:7055/hub/session/4ae85e80-c381-4d90-b782-4cf0ced93361/element timed out after 60 seconds.
+Thread#0:B:When I fill in all the error value on the screen and login
+Thread#0:T:skipped because of previous errors
+Thread#0:B:Then The error popup occurred and login failed
+Thread#0:T:skipped because of previous errors
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: testitem #6 from normal test queue 
+Thread#0:Scheduler: considering testitem #6 for thread
+Thread#0:Scheduler: using testitem #6 for thread
+Thread#0:Scheduler: Test #6 is scheduled for thread
+Thread#0:Scheduler: with testItemExecutionIndex 0
+Thread#0:T:Quit the driver
+Thread#0: Test #5/0 is finished on thread #0 as Failed within 88.0006993 seconds
+Thread#0: Test #6/0 is started on thread #0
+Thread#0:B:Given I forward to the My account page
+Thread#0:T:Start the Firefox driver
+Thread#0:T:Set implicitly wait timeout 30
+Thread#0:T:Go to https://www.zennioptical.com
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:error: The HTTP request to the remote WebDriver server for URL http://localhost:7055/hub/session/ebe2d769-b263-420d-b733-9392179a98a3/element timed out after 60 seconds.
+Thread#0:B:When I click the forgot your password button
+Thread#0:T:skipped because of previous errors
+Thread#0:B:And I fill in valid email address and reset password
+Thread#0:T:skipped because of previous errors
+Thread#0:B:Then The Prompt message appears
+Thread#0:T:skipped because of previous errors
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: testitem #7 from normal test queue 
+Thread#0:Scheduler: considering testitem #7 for thread
+Thread#0:Scheduler: using testitem #7 for thread
+Thread#0:Scheduler: Test #7 is scheduled for thread
+Thread#0:Scheduler: with testItemExecutionIndex 0
+Thread#0:T:Quit the driver
+Thread#0: Test #6/0 is finished on thread #0 as Failed within 90.2444332 seconds
+Thread#0: Test #7/0 is started on thread #0
+Thread#0:B:Given I forward to the My account page
+Thread#0:T:Start the Firefox driver
+Thread#0:T:error: Failed to start up socket within 45000 milliseconds. Attempted to connect to the following addresses: 127.0.0.1:7055
+Thread#0:B:When I click the forgot your password button
+Thread#0:T:skipped because of previous errors
+Thread#0:B:And I fill in error email address and reset password
+Thread#0:T:skipped because of previous errors
+Thread#0:B:Then The error popup occurred and reset password failed
+Thread#0:T:skipped because of previous errors
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: testitem #8 from normal test queue 
+Thread#0:Scheduler: considering testitem #8 for thread
+Thread#0:Scheduler: using testitem #8 for thread
+Thread#0:Scheduler: Test #8 is scheduled for thread
+Thread#0:Scheduler: with testItemExecutionIndex 0
+Thread#0: Test #7/0 is finished on thread #0 as Failed within 46.3024154 seconds
+Thread#0: Test #8/0 is started on thread #0
+Thread#0:T:warning: The previous ScenarioContext was not disposed.
+Thread#0:B:Given I forward to the My account page
+Thread#0:T:Start the Firefox driver
+Thread#0:T:Set implicitly wait timeout 30
+Thread#0:T:Go to https://www.zennioptical.com
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:error: The HTTP request to the remote WebDriver server for URL http://localhost:7055/hub/session/66418bbe-eb42-4861-a3a0-a6abb51ce851/element timed out after 60 seconds.
+Thread#0:B:And log in my account
+Thread#0:T:skipped because of previous errors
+Thread#0:B:When I click the my account button
+Thread#0:T:skipped because of previous errors
+Thread#0:B:And I click the sign out button
+Thread#0:T:skipped because of previous errors
+Thread#0:B:Then The account sign out successful
+Thread#0:T:skipped because of previous errors
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: testitem #9 from normal test queue 
+Thread#0:Scheduler: considering testitem #9 for thread
+Thread#0:Scheduler: using testitem #9 for thread
+Thread#0:Scheduler: Test #9 is scheduled for thread
+Thread#0:Scheduler: with testItemExecutionIndex 0
+Thread#0:T:Quit the driver
+Thread#0: Test #8/0 is finished on thread #0 as Failed within 67.8827354 seconds
+Thread#0: Test #9/0 is started on thread #0
+Thread#0:B:Given I forward to the My account page
+Thread#0:T:Start the Firefox driver
+Thread#0:T:Set implicitly wait timeout 30
+Thread#0:T:Go to https://www.zennioptical.com
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:Click at the element
+Thread#0:T:Find element By.XPath: (//a[contains(text(),'Login / Sign Up')])[2]
+Thread#0:T:Click at the element
+Thread#0:T:done: SpecFlowFeature1Steps.GivenIForwardToTheMyAccountPage() (98.2s)
+Thread#0:B:When I click the my account button
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:error: The HTTP request to the remote WebDriver server for URL http://localhost:7055/hub/session/fd9523c8-10a1-4401-a8b6-19b8173bb018/element timed out after 60 seconds.
+Thread#0:B:And I click the Account Overview button
+Thread#0:T:skipped because of previous errors
+Thread#0:B:Then The jump to login page
+Thread#0:T:skipped because of previous errors
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: at the end of normal test queue
+Thread#0:Scheduler: enumerator for thread is at end
+Thread#0:Scheduler: No more tests for thread 
+Thread#0:T:Quit the driver
+Thread#0: Test #9/0 is finished on thread #0 as Failed within 162.1271055 seconds
+Appdomain Disposed
+Thread#-1:Scheduler: get next test for thread
+Thread#:Scheduler: at the end of normal test queue
+Thread#-1:Scheduler: enumerator for thread is at end
+Total: 6
+Succeeded: 0
+Ignored: 0
+Pending: 0
+Skipped: 0
+Failed: 6

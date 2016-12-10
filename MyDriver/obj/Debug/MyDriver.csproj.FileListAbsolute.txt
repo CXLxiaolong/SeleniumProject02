@@ -1,0 +1,77 @@
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\bin\Debug\MyDriver.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\bin\Debug\MyDriver.pdb
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\bin\Debug\Support.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\bin\Debug\WebDriver.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\bin\Debug\WebDriver.Support.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\bin\Debug\Support.pdb
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\bin\Debug\WebDriver.xml
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\bin\Debug\WebDriver.Support.xml
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\obj\Debug\MyDriver.csprojResolveAssemblyReference.cache
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\obj\Debug\MyDriver.dll
+C:\Users\jie.sheng\Desktop\Selenium介绍\SeleniumSpecflow\MyDriver\obj\Debug\MyDriver.pdb
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\bin\Debug\MyDriver.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\bin\Debug\MyDriver.pdb
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\bin\Debug\Support.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\bin\Debug\WebDriver.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\bin\Debug\WebDriver.Support.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\bin\Debug\Support.pdb
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\bin\Debug\WebDriver.xml
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\bin\Debug\WebDriver.Support.xml
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\obj\Debug\MyDriver.csprojResolveAssemblyReference.cache
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\obj\Debug\MyDriver.dll
+D:\selenium 公司培训\第二章节 Selenium\3 - Selenium基础框架\AutomationFramework\MyDriver\obj\Debug\MyDriver.pdb
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\obj\Debug\MyDriver.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\obj\Debug\MyDriver.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\obj\Debug\MyDriver.pdb
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\bin\Debug\MyDriver.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\bin\Debug\MyDriver.pdb
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\bin\Debug\Support.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.Support.dll
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\bin\Debug\Support.pdb
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.xml
+C:\Users\Administrator\Desktop\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.Support.xml
+D:\0\陈小龙-Selenium\MyDriver\obj\Debug\MyDriver.csprojResolveAssemblyReference.cache
+D:\0\陈小龙-Selenium\MyDriver\obj\Debug\MyDriver.dll
+D:\0\陈小龙-Selenium\MyDriver\bin\Debug\MyDriver.dll
+D:\0\陈小龙-Selenium\MyDriver\bin\Debug\MyDriver.pdb
+D:\0\陈小龙-Selenium\MyDriver\bin\Debug\Support.dll
+D:\0\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.dll
+D:\0\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.Support.dll
+D:\0\陈小龙-Selenium\MyDriver\bin\Debug\Support.pdb
+D:\0\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.xml
+D:\0\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.Support.xml
+D:\0\陈小龙-Selenium\MyDriver\obj\Debug\MyDriver.pdb
+D:\0陈小龙\陈小龙-Selenium\MyDriver\bin\Debug\MyDriver.dll
+D:\0陈小龙\陈小龙-Selenium\MyDriver\bin\Debug\MyDriver.pdb
+D:\0陈小龙\陈小龙-Selenium\MyDriver\bin\Debug\Support.dll
+D:\0陈小龙\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.dll
+D:\0陈小龙\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.Support.dll
+D:\0陈小龙\陈小龙-Selenium\MyDriver\bin\Debug\Support.pdb
+D:\0陈小龙\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.xml
+D:\0陈小龙\陈小龙-Selenium\MyDriver\bin\Debug\WebDriver.Support.xml
+D:\0陈小龙\陈小龙-Selenium\MyDriver\obj\Debug\MyDriver.csprojResolveAssemblyReference.cache
+D:\0陈小龙\陈小龙-Selenium\MyDriver\obj\Debug\MyDriver.dll
+D:\0陈小龙\陈小龙-Selenium\MyDriver\obj\Debug\MyDriver.pdb
+C:\Users\Administrator\Desktop\Selenium\MyDriver\bin\Debug\MyDriver.dll
+C:\Users\Administrator\Desktop\Selenium\MyDriver\bin\Debug\MyDriver.pdb
+C:\Users\Administrator\Desktop\Selenium\MyDriver\bin\Debug\Support.dll
+C:\Users\Administrator\Desktop\Selenium\MyDriver\bin\Debug\WebDriver.dll
+C:\Users\Administrator\Desktop\Selenium\MyDriver\bin\Debug\WebDriver.Support.dll
+C:\Users\Administrator\Desktop\Selenium\MyDriver\bin\Debug\Support.pdb
+C:\Users\Administrator\Desktop\Selenium\MyDriver\bin\Debug\WebDriver.xml
+C:\Users\Administrator\Desktop\Selenium\MyDriver\bin\Debug\WebDriver.Support.xml
+C:\Users\Administrator\Desktop\Selenium\MyDriver\obj\Debug\MyDriver.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\Selenium\MyDriver\obj\Debug\MyDriver.dll
+C:\Users\Administrator\Desktop\Selenium\MyDriver\obj\Debug\MyDriver.pdb
+C:\Users\labuser\Desktop\Selenium\MyDriver\bin\Debug\MyDriver.dll
+C:\Users\labuser\Desktop\Selenium\MyDriver\bin\Debug\MyDriver.pdb
+C:\Users\labuser\Desktop\Selenium\MyDriver\bin\Debug\Support.dll
+C:\Users\labuser\Desktop\Selenium\MyDriver\bin\Debug\WebDriver.dll
+C:\Users\labuser\Desktop\Selenium\MyDriver\bin\Debug\WebDriver.Support.dll
+C:\Users\labuser\Desktop\Selenium\MyDriver\bin\Debug\Support.pdb
+C:\Users\labuser\Desktop\Selenium\MyDriver\bin\Debug\WebDriver.xml
+C:\Users\labuser\Desktop\Selenium\MyDriver\bin\Debug\WebDriver.Support.xml
+C:\Users\labuser\Desktop\Selenium\MyDriver\obj\Debug\MyDriver.csprojResolveAssemblyReference.cache
+C:\Users\labuser\Desktop\Selenium\MyDriver\obj\Debug\MyDriver.dll
+C:\Users\labuser\Desktop\Selenium\MyDriver\obj\Debug\MyDriver.pdb
