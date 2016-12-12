@@ -41,7 +41,9 @@ namespace Selenium.SpecRun
             Driver.GotoUrl("https://www.zennioptical.com/");
 
             Thread.Sleep(2000);
+
             if(homepage.PopUpClose.IsDisplayed){
+
                 homepage.PopUpClose.Click();
             }          
             Thread.Sleep(2000);
@@ -54,6 +56,35 @@ namespace Selenium.SpecRun
             #endregion
 
         }
+
+        [Given(@"forward to the My account page")]
+        public void GivenForwardToTheMyAccountPage()
+        {
+            #region  Page
+            Driver = new WebDriver(Browser.Firefox);
+            homepage = new HomePage(Driver);
+            forgotpassword = new ForgotPasswordPage(Driver);
+            login = new LoginPage(Driver);
+            DashBoard = new DashBoardPage(Driver);
+            #endregion
+
+            #region Steps
+
+            Driver.GotoUrl("https://www.zennioptical.com/");
+            homepage.MyAccount.Click();
+            homepage.LoginOrSingout.Click();
+
+            //  login.login("xiaolong.chen@dilatoit.com", "!QAZ2wsx");
+
+            #endregion
+        }
+
+
+
+
+
+
+
 
         [When(@"I fill in all the necessary value on the screen and login")]
         public void WhenIFillInAllTheNecessaryValueOnTheScreenAndLogin()
@@ -190,8 +221,9 @@ namespace Selenium.SpecRun
             Driver = new WebDriver(url, capabilities);
         }
 
-        [Given(@"Forward to the My account page")]
-        public void GivenForwardToTheMyAccountPage()
+
+        [Given(@"To the My account page")]
+        public void GivenToTheMyAccountPage()
         {
 
             #region  Page
@@ -217,7 +249,9 @@ namespace Selenium.SpecRun
 
             #endregion
 
+        
         }
+
 
         #endregion
 

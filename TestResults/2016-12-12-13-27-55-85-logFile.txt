@@ -1,0 +1,20 @@
+2016-12-12-13:27:55 - Start the Firefox driver
+2016-12-12-13:28:07 - Set implicitly wait timeout 30
+2016-12-12-13:28:08 - Go to https://www.zennioptical.com/
+2016-12-12-13:28:10 - Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+2016-12-12-13:29:09 - is Displayed
+2016-12-12-13:29:09 - Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+2016-12-12-13:29:09 - Click at the element
+2016-12-12-13:29:12 - Find element By.XPath: //ul[@id='main-nav']/li[5]
+2016-12-12-13:29:12 - Click at the element
+2016-12-12-13:29:12 - Find element By.XPath: (//a[contains(text(),'Login / Sign Up')])[2]
+2016-12-12-13:29:12 - Click at the element
+2016-12-12-13:29:12 - Find element By.XPath: //a[contains(@href, '/forgotPwd')]
+2016-12-12-13:29:30 - Click at the element
+2016-12-12-13:29:30 - Find element By.Id: forgot_email_address
+2016-12-12-13:29:34 - Click at the element
+2016-12-12-13:29:34 - Find element By.Id: btn_reset_pwd
+2016-12-12-13:29:35 - Click at the element
+2016-12-12-13:29:38 - Find element By.XPath: //div[@class='r_msg']
+2016-12-12-13:29:41 - Get element display text
+2016-12-12-13:29:41 - Quit the driver

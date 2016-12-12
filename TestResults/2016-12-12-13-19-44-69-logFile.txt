@@ -1,0 +1,35 @@
+2016-12-12-13:19:44 - Start the Firefox driver
+2016-12-12-13:19:58 - Set implicitly wait timeout 30
+2016-12-12-13:19:58 - Go to https://www.zennioptical.com/
+2016-12-12-13:20:00 - Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+2016-12-12-13:21:01 - Quit the driver
+2016-12-12-13:21:04 - Start the Firefox driver
+2016-12-12-13:21:16 - Set implicitly wait timeout 30
+2016-12-12-13:21:16 - Go to https://www.zennioptical.com/
+2016-12-12-13:21:18 - Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+2016-12-12-13:22:19 - Quit the driver
+2016-12-12-13:22:20 - Start the Firefox driver
+2016-12-12-13:22:33 - Set implicitly wait timeout 30
+2016-12-12-13:22:34 - Go to https://www.zennioptical.com/
+2016-12-12-13:22:36 - Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+2016-12-12-13:23:21 - is Displayed
+2016-12-12-13:23:25 - Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+2016-12-12-13:23:25 - Click at the element
+2016-12-12-13:23:28 - Find element By.XPath: //ul[@id='main-nav']/li[5]
+2016-12-12-13:23:28 - Click at the element
+2016-12-12-13:23:28 - Find element By.XPath: (//a[contains(text(),'Login / Sign Up')])[2]
+2016-12-12-13:23:28 - Click at the element
+2016-12-12-13:23:28 - Find element By.Id: signIn_email
+2016-12-12-13:24:02 - Click at the element
+2016-12-12-13:24:03 - Find element By.Id: siginIn_pw
+2016-12-12-13:24:03 - Click at the element
+2016-12-12-13:24:03 - Find element By.Id: login
+2016-12-12-13:24:03 - Click at the element
+2016-12-12-13:24:03 - Find element By.XPath: //ul[@id='main-nav']/li[5]
+2016-12-12-13:24:12 - Click at the element
+2016-12-12-13:24:12 - Find element By.XPath: //p[@class='text-center margin-bottom0']/a
+2016-12-12-13:24:12 - Click at the element
+2016-12-12-13:24:12 - Driver the url
+2016-12-12-13:24:15 - Find element By.XPath: //h3
+2016-12-12-13:24:18 - Get element display text
+2016-12-12-13:24:18 - Quit the driver

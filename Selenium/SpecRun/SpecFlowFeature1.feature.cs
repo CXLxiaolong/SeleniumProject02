@@ -74,7 +74,7 @@ namespace Selenium.SpecRun
 #line 7
 this.ScenarioSetup(scenarioInfo);
 #line 8
- testRunner.Given("I forward to the My account page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+ testRunner.Given("To the My account page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 9
  testRunner.When("I click the forgot your password button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line 10

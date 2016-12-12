@@ -1,0 +1,63 @@
+﻿VS filter: testpath:TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+forgot+password
+Discovering target: Default
+Discovering tests from assembly: C:\Users\Administrator\Desktop\SeleniumProject\Selenium\bin\Debug\Selenium.dll
+Appdomain Disposed
+Test Suite Dump
+#0: Selenium/Default - 
+#1: Default - 
+#2: Selenium - 
+#3: login - 
+#4: Verify the workflow of forgot password - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+forgot+password
+End: Test Suite Dump
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: testitem #4 from normal test queue 
+Thread#0:Scheduler: considering testitem #4 for thread
+Thread#0:Scheduler: using testitem #4 for thread
+Thread#0:Scheduler: Test #4 is scheduled for thread
+Thread#0:Scheduler: with testItemExecutionIndex 0
+Thread #0: creating new test thread executor for Selenium, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null (target: Default)
+Loading SpecRun type 'TechTalk.SpecRun.Framework.TestAssemblyExecutor' from: C:\Users\Administrator\AppData\Local\Temp\VisualStudioTestExplorerExtensions\SpecRun.Runner.1.5.2\tools\TechTalk.SpecRun.Framework.Executor.dll
+Thread#0: Test #4/0 is started on thread #0
+Thread#0:B:Given I forward to the My account page
+Thread#0:T:Start the Firefox driver
+Thread#0:T:Set implicitly wait timeout 30
+Thread#0:T:Go to https://www.zennioptical.com/
+Thread#0:T:Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+Thread#0:T:is Displayed
+Thread#0:T:Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+Thread#0:T:Click at the element
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:Click at the element
+Thread#0:T:Find element By.XPath: (//a[contains(text(),'Login / Sign Up')])[2]
+Thread#0:T:Click at the element
+Thread#0:T:done: SpecFlowFeature1Steps.GivenIForwardToTheMyAccountPage() (77.1s)
+Thread#0:B:When I click the forgot your password button
+Thread#0:T:Find element By.XPath: //a[contains(@href, '/forgotPwd')]
+Thread#0:T:Click at the element
+Thread#0:T:done: SpecFlowFeature1Steps.WhenIClickTheForgotYourPasswordButton() (17.7s)
+Thread#0:B:And I fill in valid email address and reset password
+Thread#0:T:Find element By.Id: forgot_email_address
+Thread#0:T:Click at the element
+Thread#0:T:Find element By.Id: btn_reset_pwd
+Thread#0:T:Click at the element
+Thread#0:T:done: SpecFlowFeature1Steps.WhenIFillInValidEmailAddressAndResetPassword() (7.9s)
+Thread#0:B:Then The Prompt message appears
+Thread#0:T:Find element By.XPath: //div[@class='r_msg']
+Thread#0:T:Get element display text
+Thread#0:T:done: SpecFlowFeature1Steps.ThenThePromptMessageAppears() (2.8s)
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: at the end of normal test queue
+Thread#0:Scheduler: enumerator for thread is at end
+Thread#0:Scheduler: No more tests for thread 
+Thread#0:T:Quit the driver
+Thread#0: Test #4/0 is finished on thread #0 as Succeeded within 107.6066204 seconds
+Appdomain Disposed
+Thread#-1:Scheduler: get next test for thread
+Thread#:Scheduler: at the end of normal test queue
+Thread#-1:Scheduler: enumerator for thread is at end
+Total: 1
+Succeeded: 1
+Ignored: 0
+Pending: 0
+Skipped: 0
+Failed: 0

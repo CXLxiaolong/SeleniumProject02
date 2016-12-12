@@ -5,7 +5,7 @@ Feature: login
 @TestCaseZenni-1
 @ForgotPassword 
 Scenario: Verify the workflow of forgot password
-	Given I forward to the My account page
+	Given To the My account page
 	When I click the forgot your password button
 	And I fill in valid email address and reset password
 	Then The Prompt message appears 
