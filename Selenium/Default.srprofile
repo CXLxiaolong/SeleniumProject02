@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TestProfile xmlns="http://www.specflow.org/schemas/plus/TestProfile/1.5">
   <Settings projectName="Selenium" projectId="{9158872a-af17-45ca-85cf-42a0e10631cf}" />
-  <Execution retryFor="None" retryCount="0" stopAfterFailures="0" testThreadCount="1" testSchedulingMode="Sequential"/>
+  <Execution retryFor="None" retryCount="2" stopAfterFailures="0" testThreadCount="1" testSchedulingMode="Sequential"/>
   <TestAssemblyPaths>
     <TestAssemblyPath>Selenium.dll</TestAssemblyPath>
   </TestAssemblyPaths>

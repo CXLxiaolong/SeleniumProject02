@@ -89,3 +89,16 @@ C:\Users\labuser\Desktop\Selenium\PageObject\bin\Debug\WebDriver.Support.xml
 C:\Users\labuser\Desktop\Selenium\PageObject\obj\Debug\PageObject.csprojResolveAssemblyReference.cache
 C:\Users\labuser\Desktop\Selenium\PageObject\obj\Debug\PageObject.dll
 C:\Users\labuser\Desktop\Selenium\PageObject\obj\Debug\PageObject.pdb
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\PageObject.dll
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\PageObject.pdb
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\MyDriver.dll
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\Support.dll
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\WebDriver.dll
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\WebDriver.Support.dll
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\MyDriver.pdb
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\Support.pdb
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\WebDriver.xml
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\bin\Debug\WebDriver.Support.xml
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\obj\Debug\PageObject.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\obj\Debug\PageObject.dll
+C:\Users\Administrator\Desktop\SeleniumProject\PageObject\obj\Debug\PageObject.pdb

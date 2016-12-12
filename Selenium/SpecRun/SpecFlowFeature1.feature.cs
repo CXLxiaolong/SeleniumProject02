@@ -232,14 +232,6 @@ this.ScenarioSetup(scenarioInfo);
 #line hidden
         }
         
-        [TechTalk.SpecRun.ScenarioAttribute("Test Saucelabs, Safari", new string[] {
-                "Selenium-Remote"}, SourceLine=60)]
-        public virtual void TestSaucelabs_Safari()
-        {
-            this.TestSaucelabs("Safari", "9.0", "OS X 10.11", ((string[])(null)));
-#line hidden
-        }
-        
         [TechTalk.SpecRun.TestRunCleanup()]
         public virtual void TestRunCleanup()
         {

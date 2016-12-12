@@ -23,3 +23,8 @@ C:\Users\labuser\Desktop\Selenium\Support\bin\Debug\Support.pdb
 C:\Users\labuser\Desktop\Selenium\Support\obj\Debug\Support.csprojResolveAssemblyReference.cache
 C:\Users\labuser\Desktop\Selenium\Support\obj\Debug\Support.dll
 C:\Users\labuser\Desktop\Selenium\Support\obj\Debug\Support.pdb
+C:\Users\Administrator\Desktop\SeleniumProject\Support\bin\Debug\Support.dll
+C:\Users\Administrator\Desktop\SeleniumProject\Support\bin\Debug\Support.pdb
+C:\Users\Administrator\Desktop\SeleniumProject\Support\obj\Debug\Support.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\SeleniumProject\Support\obj\Debug\Support.dll
+C:\Users\Administrator\Desktop\SeleniumProject\Support\obj\Debug\Support.pdb

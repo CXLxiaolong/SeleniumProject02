@@ -60,4 +60,3 @@ Examples:
 	| Browser | Version | Platform   |
 	| Firefox | 47.0    | Windows 7  |
 	| Chrome  | 50.0    | Windows 10 |
-	| Safari  | 9.0     | OS X 10.11 |
