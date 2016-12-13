@@ -1,4 +1,4 @@
-﻿VS filter: testpath:TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+logout | testpath:TestAssembly:Selenium/Feature:login/Scenario:Verify+the+error+email+address+of+forgot+password | testpath:TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+forgot+password
+﻿VS filter: testpath:TestAssembly:Selenium/Feature:login/Scenario:Verify+the+error+email+address+of+forgot+password | testpath:TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+logout | testpath:TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+forgot+password | testpath:TestAssembly:Selenium/Feature:login/Scenario:Verify+no+login+account+click+Account+Overview+the+jump+to+the+login+page
 Discovering target: Default
 Discovering tests from assembly: C:\Users\Administrator\Desktop\SeleniumProject\Selenium\bin\Debug\Selenium.dll
 Appdomain Disposed
@@ -10,6 +10,7 @@ Test Suite Dump
 #4: Verify the workflow of forgot password - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+forgot+password
 #5: Verify the error email address of forgot password - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+error+email+address+of+forgot+password
 #6: Verify the workflow of logout - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+logout
+#7: Verify no login account click Account Overview the jump to the login page - TestAssembly:Selenium/Feature:login/Scenario:Verify+no+login+account+click+Account+Overview+the+jump+to+the+login+page
 End: Test Suite Dump
 Thread#0:Scheduler: get next test for thread
 Thread#:Scheduler: testitem #4 from normal test queue 
@@ -20,12 +21,15 @@ Thread#0:Scheduler: with testItemExecutionIndex 0
 Thread #0: creating new test thread executor for Selenium, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null (target: Default)
 Loading SpecRun type 'TechTalk.SpecRun.Framework.TestAssemblyExecutor' from: C:\Users\Administrator\AppData\Local\Temp\VisualStudioTestExplorerExtensions\SpecRun.Runner.1.5.2\tools\TechTalk.SpecRun.Framework.Executor.dll
 Thread#0: Test #4/0 is started on thread #0
-Thread#0:B:Given I forward to the My account page
+Thread#0:B:Given forward to the My account page
 Thread#0:T:Start the Firefox driver
 Thread#0:T:Set implicitly wait timeout 30
 Thread#0:T:Go to https://www.zennioptical.com/
 Thread#0:T:Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
-Thread#0:T:error: The HTTP request to the remote WebDriver server for URL http://localhost:7055/hub/session/2591f65f-1ecc-4b11-a711-179506e3e864/element timed out after 60 seconds.
+Thread#0:T:is Displayed
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:Click at the element
+Thread#0:T:error: Unexpected error. Element is not clickable at point (1172.816650390625, 79). Other element would receive the click: <div style="background-color: rgb(0, 0, 0); position: fixed; transition: opacity 0.15s linear 0s; z-index: 1000000; width: 100%; height: 100%; top: 0px; left: 0px;" id="popup-overlay-124d70ff-1403-4327-b91f-cad5f2d24e8a" class="popup-overlay"></div>
 Thread#0:B:When I click the forgot your password button
 Thread#0:T:skipped because of previous errors
 Thread#0:B:And I fill in valid email address and reset password
@@ -39,14 +43,17 @@ Thread#0:Scheduler: using testitem #5 for thread
 Thread#0:Scheduler: Test #5 is scheduled for thread
 Thread#0:Scheduler: with testItemExecutionIndex 0
 Thread#0:T:Quit the driver
-Thread#0: Test #4/0 is finished on thread #0 as Failed within 79.8552182 seconds
+Thread#0: Test #4/0 is finished on thread #0 as Failed within 40.663973 seconds
 Thread#0: Test #5/0 is started on thread #0
-Thread#0:B:Given I forward to the My account page
+Thread#0:B:Given forward to the My account page
 Thread#0:T:Start the Firefox driver
 Thread#0:T:Set implicitly wait timeout 30
 Thread#0:T:Go to https://www.zennioptical.com/
 Thread#0:T:Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
-Thread#0:T:error: The HTTP request to the remote WebDriver server for URL http://localhost:7055/hub/session/be10173a-fc51-4477-80b9-2acf6aed9ca0/element timed out after 60 seconds.
+Thread#0:T:is Displayed
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:Click at the element
+Thread#0:T:error: Unexpected error. Element is not clickable at point (1172.816650390625, 79). Other element would receive the click: <div style="background-color: rgb(0, 0, 0); position: fixed; transition: opacity 0.15s linear 0s; z-index: 1000000; width: 100%; height: 100%; top: 0px; left: 0px;" id="popup-overlay-124d70ff-1403-4327-b91f-cad5f2d24e8a" class="popup-overlay"></div>
 Thread#0:B:When I click the forgot your password button
 Thread#0:T:skipped because of previous errors
 Thread#0:B:And I fill in error email address and reset password
@@ -60,9 +67,9 @@ Thread#0:Scheduler: using testitem #6 for thread
 Thread#0:Scheduler: Test #6 is scheduled for thread
 Thread#0:Scheduler: with testItemExecutionIndex 0
 Thread#0:T:Quit the driver
-Thread#0: Test #5/0 is finished on thread #0 as Failed within 76.6633345 seconds
+Thread#0: Test #5/0 is finished on thread #0 as Failed within 48.693059 seconds
 Thread#0: Test #6/0 is started on thread #0
-Thread#0:B:Given I forward to the My account page
+Thread#0:B:Given forward to the My account page
 Thread#0:T:Start the Firefox driver
 Thread#0:T:Set implicitly wait timeout 30
 Thread#0:T:Go to https://www.zennioptical.com/
@@ -74,7 +81,7 @@ Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
 Thread#0:T:Click at the element
 Thread#0:T:Find element By.XPath: (//a[contains(text(),'Login / Sign Up')])[2]
 Thread#0:T:Click at the element
-Thread#0:T:done: SpecFlowFeature1Steps.GivenIForwardToTheMyAccountPage() (67.8s)
+Thread#0:T:done: SpecFlowFeature1Steps.GivenForwardToTheMyAccountPage() (43.1s)
 Thread#0:B:And log in my account
 Thread#0:T:Find element By.Id: signIn_email
 Thread#0:T:Click at the element
@@ -82,11 +89,11 @@ Thread#0:T:Find element By.Id: siginIn_pw
 Thread#0:T:Click at the element
 Thread#0:T:Find element By.Id: login
 Thread#0:T:Click at the element
-Thread#0:T:done: SpecFlowFeature1Steps.GivenLogInMyAccount() (34.9s)
+Thread#0:T:done: SpecFlowFeature1Steps.GivenLogInMyAccount() (26.3s)
 Thread#0:B:When I click the my account button
 Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
 Thread#0:T:Click at the element
-Thread#0:T:done: SpecFlowFeature1Steps.WhenIClickTheMyAccountButton() (8.8s)
+Thread#0:T:done: SpecFlowFeature1Steps.WhenIClickTheMyAccountButton() (3.5s)
 Thread#0:B:And I click the sign out button
 Thread#0:T:Find element By.XPath: //p[@class='text-center margin-bottom0']/a
 Thread#0:T:Click at the element
@@ -95,19 +102,54 @@ Thread#0:B:Then The account sign out successful
 Thread#0:T:Driver the url
 Thread#0:T:Find element By.XPath: //h3
 Thread#0:T:Get element display text
-Thread#0:T:done: SpecFlowFeature1Steps.ThenTheAccountSignOutSuccessful() (5.3s)
+Thread#0:T:done: SpecFlowFeature1Steps.ThenTheAccountSignOutSuccessful() (5.8s)
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: testitem #7 from normal test queue 
+Thread#0:Scheduler: considering testitem #7 for thread
+Thread#0:Scheduler: using testitem #7 for thread
+Thread#0:Scheduler: Test #7 is scheduled for thread
+Thread#0:Scheduler: with testItemExecutionIndex 0
+Thread#0:T:Quit the driver
+Thread#0: Test #6/0 is finished on thread #0 as Succeeded within 81.0884917 seconds
+Thread#0: Test #7/0 is started on thread #0
+Thread#0:B:Given forward to the My account page
+Thread#0:T:Start the Firefox driver
+Thread#0:T:Set implicitly wait timeout 30
+Thread#0:T:Go to https://www.zennioptical.com/
+Thread#0:T:Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+Thread#0:T:is Displayed
+Thread#0:T:Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+Thread#0:T:Click at the element
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:Click at the element
+Thread#0:T:Find element By.XPath: (//a[contains(text(),'Login / Sign Up')])[2]
+Thread#0:T:Click at the element
+Thread#0:T:done: SpecFlowFeature1Steps.GivenForwardToTheMyAccountPage() (44.4s)
+Thread#0:B:When I click the my account button
+Thread#0:T:Find element By.XPath: //ul[@id='main-nav']/li[5]
+Thread#0:T:Click at the element
+Thread#0:T:done: SpecFlowFeature1Steps.WhenIClickTheMyAccountButton() (27.6s)
+Thread#0:B:And I click the Account Overview button
+Thread#0:T:Find element By.XPath: (//a[contains(text(),'Account Overview')])[2]
+Thread#0:T:Click at the element
+Thread#0:T:done: SpecFlowFeature1Steps.WhenIClickTheAccountOverviewButton() (0.3s)
+Thread#0:B:Then The jump to login page
+Thread#0:T:Driver the url
+Thread#0:T:Find element By.XPath: //h3
+Thread#0:T:Get element display text
+Thread#0:T:done: SpecFlowFeature1Steps.ThenTheJumpToLoginPage() (0.3s)
 Thread#0:Scheduler: get next test for thread
 Thread#:Scheduler: at the end of normal test queue
 Thread#0:Scheduler: enumerator for thread is at end
 Thread#0:Scheduler: No more tests for thread 
 Thread#0:T:Quit the driver
-Thread#0: Test #6/0 is finished on thread #0 as Succeeded within 119.1501514 seconds
+Thread#0: Test #7/0 is finished on thread #0 as Succeeded within 74.6217065 seconds
 Appdomain Disposed
 Thread#-1:Scheduler: get next test for thread
 Thread#:Scheduler: at the end of normal test queue
 Thread#-1:Scheduler: enumerator for thread is at end
-Total: 3
-Succeeded: 1
+Total: 4
+Succeeded: 2
 Ignored: 0
 Pending: 0
 Skipped: 0

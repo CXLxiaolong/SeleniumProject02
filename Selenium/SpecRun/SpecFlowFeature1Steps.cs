@@ -25,38 +25,6 @@ namespace Selenium.SpecRun
 
         #region Verify the workflow of My account login
 
-        [Given(@"I forward to the My account page")]
-        public void GivenIForwardToTheMyAccountPage()
-        {
-            #region  Page
-            Driver = new WebDriver(Browser.Firefox);
-            homepage = new HomePage(Driver);
-            forgotpassword = new ForgotPasswordPage(Driver);
-            login = new LoginPage(Driver);
-            DashBoard = new DashBoardPage(Driver);
-            #endregion
-
-            #region Steps
-
-            Driver.GotoUrl("https://www.zennioptical.com/");
-
-            Thread.Sleep(2000);
-
-            if(homepage.PopUpClose.IsDisplayed){
-
-                homepage.PopUpClose.Click();
-            }          
-            Thread.Sleep(2000);
-            homepage.MyAccount.Click();
-            homepage.LoginOrSingout.Click();
-           
-           
-          //  login.login("xiaolong.chen@dilatoit.com", "!QAZ2wsx");
-
-            #endregion
-
-        }
-
         [Given(@"forward to the My account page")]
         public void GivenForwardToTheMyAccountPage()
         {
@@ -71,18 +39,17 @@ namespace Selenium.SpecRun
             #region Steps
 
             Driver.GotoUrl("https://www.zennioptical.com/");
+            if (homepage.PopUpClose.IsDisplayed)
+            {
+                homepage.PopUpClose.Click();
+            }
+            Thread.Sleep(2000);
+
             homepage.MyAccount.Click();
             homepage.LoginOrSingout.Click();
 
-            //  login.login("xiaolong.chen@dilatoit.com", "!QAZ2wsx");
-
             #endregion
         }
-
-
-
-
-
 
 
 
@@ -269,13 +236,36 @@ namespace Selenium.SpecRun
             capabilities.SetCapability("version", p1);
             capabilities.SetCapability("Platform", p2);
             Driver = new WebDriver(url, capabilities);
-
-
-
             // xiaolongchen
             //!QAZ2wsx
 
         }
+
+        [Given(@"I Forward to the My account page")]
+        public void GivenIForwardToTheMyAccount()
+        {
+
+
+            #region  Page
+            homepage = new HomePage(Driver);
+            forgotpassword = new ForgotPasswordPage(Driver);
+            login = new LoginPage(Driver);
+            DashBoard = new DashBoardPage(Driver);
+
+            #endregion
+            #region Steps
+            Driver.GotoUrl("https://www.zennioptical.com/");
+            Thread.Sleep(2000);
+            if (homepage.PopUpClose.IsDisplayed)
+            {
+                homepage.PopUpClose.Click();
+            }
+            Thread.Sleep(2000);
+            homepage.MyAccount.Click();
+            homepage.LoginOrSingout.Click();
+            #endregion
+        }
+
 
         #endregion
 
