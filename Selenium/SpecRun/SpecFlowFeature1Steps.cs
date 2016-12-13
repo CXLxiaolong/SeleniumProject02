@@ -111,6 +111,7 @@ namespace Selenium.SpecRun
         [Then(@"The Prompt message appears")]
         public void ThenThePromptMessageAppears()
         {
+
             forgotpassword.SendSuccessful.Text.ShouldContain("We have sent you an email with a link to reset your password. Please check your email.");
 
         }

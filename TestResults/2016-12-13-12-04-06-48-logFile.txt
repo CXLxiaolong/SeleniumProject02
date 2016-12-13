@@ -1,0 +1,10 @@
+2016-12-13-12:04:06 - Start the Firefox driver
+2016-12-13-12:04:19 - Set implicitly wait timeout 30
+2016-12-13-12:04:19 - Go to https://www.zennioptical.com/login
+2016-12-13-12:04:20 - Find element By.XPath: //a[contains(@href, '/forgotPwd')]
+2016-12-13-12:04:35 - Click at the element
+2016-12-13-12:04:35 - Find element By.Id: forgot_email_address
+2016-12-13-12:04:42 - Click at the element
+2016-12-13-12:04:42 - Find element By.Id: btn_reset_pwd
+2016-12-13-12:04:43 - Click at the element
+2016-12-13-12:04:43 - Quit the driver

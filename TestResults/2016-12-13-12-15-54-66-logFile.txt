@@ -1,0 +1,17 @@
+2016-12-13-12:15:54 - Start the Firefox driver
+2016-12-13-12:16:05 - Set implicitly wait timeout 30
+2016-12-13-12:16:06 - Go to https://www.zennioptical.com/login
+2016-12-13-12:16:06 - Find element By.Id: signIn_email
+2016-12-13-12:16:32 - Click at the element
+2016-12-13-12:16:32 - Find element By.Id: siginIn_pw
+2016-12-13-12:16:32 - Click at the element
+2016-12-13-12:16:32 - Find element By.Id: login
+2016-12-13-12:16:32 - Click at the element
+2016-12-13-12:16:35 - Find element By.XPath: //ul[@id='main-nav']/li[5]
+2016-12-13-12:16:38 - Click at the element
+2016-12-13-12:16:38 - Find element By.XPath: //p[@class='text-center margin-bottom0']/a
+2016-12-13-12:16:38 - Click at the element
+2016-12-13-12:16:39 - Driver the url
+2016-12-13-12:16:43 - Find element By.XPath: //h3
+2016-12-13-12:16:45 - Get element display text
+2016-12-13-12:16:45 - Quit the driver

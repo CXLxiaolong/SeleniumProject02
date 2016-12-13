@@ -1,0 +1,53 @@
+﻿VS filter: testpath:TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+forgot+password
+Discovering target: Default
+Discovering tests from assembly: C:\Users\Administrator\Desktop\SeleniumProject\Selenium\bin\Debug\Selenium.dll
+Appdomain Disposed
+Test Suite Dump
+#0: Selenium/Default - 
+#1: Default - 
+#2: Selenium - 
+#3: login - 
+#4: Verify the workflow of forgot password - TestAssembly:Selenium/Feature:login/Scenario:Verify+the+workflow+of+forgot+password
+End: Test Suite Dump
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: testitem #4 from normal test queue 
+Thread#0:Scheduler: considering testitem #4 for thread
+Thread#0:Scheduler: using testitem #4 for thread
+Thread#0:Scheduler: Test #4 is scheduled for thread
+Thread#0:Scheduler: with testItemExecutionIndex 0
+Thread #0: creating new test thread executor for Selenium, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null (target: Default)
+Loading SpecRun type 'TechTalk.SpecRun.Framework.TestAssemblyExecutor' from: C:\Users\Administrator\AppData\Local\Temp\VisualStudioTestExplorerExtensions\SpecRun.Runner.1.5.2\tools\TechTalk.SpecRun.Framework.Executor.dll
+Thread#0: Test #4/0 is started on thread #0
+Thread#0:B:Given forward to the My account page
+Thread#0:T:Start the Firefox driver
+Thread#0:T:Set implicitly wait timeout 30
+Thread#0:T:Go to https://www.zennioptical.com/login
+Thread#0:T:done: SpecFlowFeature1Steps.GivenForwardToTheMyAccountPage() (13.7s)
+Thread#0:B:When I click the forgot your password button
+Thread#0:T:Find element By.XPath: //a[contains(@href, '/forgotPwd')]
+Thread#0:T:Click at the element
+Thread#0:T:done: SpecFlowFeature1Steps.WhenIClickTheForgotYourPasswordButton() (15.6s)
+Thread#0:B:And I fill in valid email address and reset password
+Thread#0:T:Find element By.Id: forgot_email_address
+Thread#0:T:Click at the element
+Thread#0:T:Find element By.Id: btn_reset_pwd
+Thread#0:T:Click at the element
+Thread#0:T:error: Unexpected error. Element is not clickable at point (404.83331298828125, 285.5). Other element would receive the click: <div style="background-color: rgb(0, 0, 0); position: fixed; transition: opacity 0.15s linear 0s; z-index: 1000000; width: 100%; height: 100%; top: 0px; left: 0px;" id="popup-overlay-124d70ff-1403-4327-b91f-cad5f2d24e8a" class="popup-overlay"></div>
+Thread#0:B:Then The Prompt message appears
+Thread#0:T:skipped because of previous errors
+Thread#0:Scheduler: get next test for thread
+Thread#:Scheduler: at the end of normal test queue
+Thread#0:Scheduler: enumerator for thread is at end
+Thread#0:Scheduler: No more tests for thread 
+Thread#0:T:Quit the driver
+Thread#0: Test #4/0 is finished on thread #0 as Failed within 39.503359 seconds
+Appdomain Disposed
+Thread#-1:Scheduler: get next test for thread
+Thread#:Scheduler: at the end of normal test queue
+Thread#-1:Scheduler: enumerator for thread is at end
+Total: 1
+Succeeded: 0
+Ignored: 0
+Pending: 0
+Skipped: 0
+Failed: 1
