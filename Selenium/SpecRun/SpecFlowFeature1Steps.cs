@@ -38,15 +38,15 @@ namespace Selenium.SpecRun
 
             #region Steps
 
-            Driver.GotoUrl("https://www.zennioptical.com/");
-            if (homepage.PopUpClose.IsDisplayed)
-            {
-                homepage.PopUpClose.Click();
-            }
-            Thread.Sleep(2000);
+            Driver.GotoUrl("https://www.zennioptical.com/login");
 
-            homepage.MyAccount.Click();
-            homepage.LoginOrSingout.Click();
+         //   if (homepage.PopUpClose.IsDisplayed)
+         //   {
+        //        homepage.PopUpClose.Click();
+        //    }
+       //     Thread.Sleep(2000);
+        //    homepage.MyAccount.Click();
+         //   homepage.LoginOrSingout.Click();
 
             #endregion
         }
@@ -155,23 +155,6 @@ namespace Selenium.SpecRun
         {
             Driver.url.ShouldContain("login?DPSLogout");
             login.LoginOrRegister.Text.ShouldContain("LOG IN OR REGISTER");
-
-        }
-        #endregion
-
-        #region Verify no login account click Account Overview the jump to the login page
-
-        [When(@"I click the Account Overview button")]
-        public void WhenIClickTheAccountOverviewButton()
-        {
-            homepage.AccountOverView.Click();
-        }
-
-        [Then(@"The jump to login page")]
-        public void ThenTheJumpToLoginPage()
-        {
-            Driver.url.ShouldContain("login");
-            login.LoginOrRegister.Text.ShouldBeEqualsTo("LOG IN OR REGISTER");
 
         }
         #endregion

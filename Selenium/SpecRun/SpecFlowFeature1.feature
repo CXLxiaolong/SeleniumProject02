@@ -11,14 +11,6 @@ Scenario: Verify the workflow of forgot password
 	Then The Prompt message appears 
 
 @TestCaseZenni-2
-@ForgotPassword 
-Scenario: Verify the error email address of forgot password 
-	Given forward to the My account page
-	When I click the forgot your password button
-	And I fill in error email address and reset password 
-	Then The error popup occurred and reset password failed
-
-@TestCaseZenni-3
 @Logout
 Scenario: Verify the workflow of logout
 	Given forward to the My account page
@@ -26,15 +18,6 @@ Scenario: Verify the workflow of logout
 	When I click the my account button
 	And I click the sign out button
 	Then The account sign out successful
-
-@TestCaseZenni-4
-@Logout
-Scenario: Verify no login account click Account Overview the jump to the login page
-	Given forward to the My account page
-	When I click the my account button
-	And I click the Account Overview button
-	Then The jump to login page
-
 
 @Selenium-Remote
 Scenario Outline: Test Saucelabs login

@@ -1,0 +1,9 @@
+2016-12-13-11:48:19 - Start the Firefox driver
+2016-12-13-11:48:30 - Set implicitly wait timeout 30
+2016-12-13-11:48:30 - Go to https://www.zennioptical.com/login
+2016-12-13-11:48:30 - Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]
+2016-12-13-11:49:31 - Quit the driver
+2016-12-13-11:49:33 - Start the Firefox driver
+2016-12-13-11:49:57 - Set implicitly wait timeout 30
+2016-12-13-11:49:57 - Go to https://www.zennioptical.com/login
+2016-12-13-11:49:58 - Find element By.XPath: //img[contains(@id,'popup-subcription-closes-icon')]

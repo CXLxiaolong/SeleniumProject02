@@ -85,70 +85,26 @@ this.ScenarioSetup(scenarioInfo);
             this.ScenarioCleanup();
         }
         
-        [TechTalk.SpecRun.ScenarioAttribute("Verify the error email address of forgot password", new string[] {
+        [TechTalk.SpecRun.ScenarioAttribute("Verify the workflow of logout", new string[] {
                 "TestCaseZenni-2",
-                "ForgotPassword"}, SourceLine=14)]
-        public virtual void VerifyTheErrorEmailAddressOfForgotPassword()
+                "Logout"}, SourceLine=14)]
+        public virtual void VerifyTheWorkflowOfLogout()
         {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the error email address of forgot password", new string[] {
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the workflow of logout", new string[] {
                         "TestCaseZenni-2",
-                        "ForgotPassword"});
+                        "Logout"});
 #line 15
 this.ScenarioSetup(scenarioInfo);
 #line 16
  testRunner.Given("forward to the My account page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line 17
- testRunner.When("I click the forgot your password button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 18
- testRunner.And("I fill in error email address and reset password", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 19
- testRunner.Then("The error popup occurred and reset password failed", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [TechTalk.SpecRun.ScenarioAttribute("Verify the workflow of logout", new string[] {
-                "TestCaseZenni-3",
-                "Logout"}, SourceLine=22)]
-        public virtual void VerifyTheWorkflowOfLogout()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify the workflow of logout", new string[] {
-                        "TestCaseZenni-3",
-                        "Logout"});
-#line 23
-this.ScenarioSetup(scenarioInfo);
-#line 24
- testRunner.Given("forward to the My account page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 25
  testRunner.And("log in my account", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 26
+#line 18
  testRunner.When("I click the my account button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 27
+#line 19
  testRunner.And("I click the sign out button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 28
+#line 20
  testRunner.Then("The account sign out successful", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-            this.ScenarioCleanup();
-        }
-        
-        [TechTalk.SpecRun.ScenarioAttribute("Verify no login account click Account Overview the jump to the login page", new string[] {
-                "TestCaseZenni-4",
-                "Logout"}, SourceLine=31)]
-        public virtual void VerifyNoLoginAccountClickAccountOverviewTheJumpToTheLoginPage()
-        {
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify no login account click Account Overview the jump to the login page", new string[] {
-                        "TestCaseZenni-4",
-                        "Logout"});
-#line 32
-this.ScenarioSetup(scenarioInfo);
-#line 33
- testRunner.Given("forward to the My account page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 34
- testRunner.When("I click the my account button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 35
- testRunner.And("I click the Account Overview button", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 36
- testRunner.Then("The jump to login page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
@@ -162,22 +118,22 @@ this.ScenarioSetup(scenarioInfo);
                 @__tags = System.Linq.Enumerable.ToArray(System.Linq.Enumerable.Concat(@__tags, exampleTags));
             }
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Test Saucelabs login", @__tags);
-#line 40
+#line 23
 this.ScenarioSetup(scenarioInfo);
-#line 41
+#line 24
  testRunner.Given(string.Format("I connect saucelabs and choose {0} of {1} at {2}", browser, version, platform), ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line 42
+#line 25
  testRunner.And("I Forward to the My account page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
-#line 43
+#line 26
  testRunner.When("I fill in all the necessary value on the screen and login", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line 44
+#line 27
  testRunner.Then("The account Login successful", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             this.ScenarioCleanup();
         }
         
         [TechTalk.SpecRun.ScenarioAttribute("Test Saucelabs login, Firefox", new string[] {
-                "Selenium-Remote"}, SourceLine=46)]
+                "Selenium-Remote"}, SourceLine=29)]
         public virtual void TestSaucelabsLogin_Firefox()
         {
             this.TestSaucelabsLogin("Firefox", "47.0", "Windows 7", ((string[])(null)));
