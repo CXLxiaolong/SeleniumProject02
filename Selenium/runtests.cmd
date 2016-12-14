@@ -7,10 +7,12 @@
 @cd ..\packages\SpecRun.Runner.*\tools
 
 @set profile=%1
+
 @set repostFile = %date:~,4%%date:~5,2%%date:~8,2%
+
 @if "%profile%" == "" set profile=Default
 
-SpecRun.exe run %profile%.srprofile "/baseFolder:%~dp0\bin\Debug" /log:specrun.log /report:%~dp0\TestResult\report.html
+SpecRun.exe run %profile%.srprofile "/baseFolder:%~dp0\bin\Debug" /log:specrun.log /report:%~dp0\TestResult\AutoTestReport.html
 
 :end
  
