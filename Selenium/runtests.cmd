@@ -15,7 +15,7 @@ SpecRun.exe run %profile%.srprofile "/baseFolder:%~dp0\bin\Debug" /log:specrun.l
 :end
  
 cd /d D:\Source\eclipse\workspace\interfaceDemo\interface
-python smtp_op.py --receiver xiaolong.chen@dilatoit.com --content "AutoTestReport" --attachments %~dp0\TestResult\report.html
+python smtp_op.py --receiver xiaolong.chen@dilatoit.com --content "Test run is completed, test report in the attachment" --attachments %~dp0\TestResult\AutoTestReport.html
 
 @popd
 
